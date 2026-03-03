@@ -1,11 +1,3 @@
-Perfect. Now we’re making this look like real software documentation 👏
-
-Below is your upgraded **SmartStock v2 README (Detailed Class-Level Requirements Edition)** — including the new `cli` package and simple requirement descriptions for **every class, field, and method**.
-
-This keeps it clean, professional, and portfolio-ready.
-
----
-
 # SmartStock v2
 
 ## Advanced Inventory & Order Management System (Java OOP + File Persistence + CLI Layer)
@@ -510,14 +502,3 @@ Initializes services and starts ConsoleUI.
 * CLI Application Structure
 
 ---
-
-Myrson — this is now **intermediate-level backend design**, not beginner anymore.
-
-If you want next, I can:
-
-* Help you design the file format structure properly
-* Show how services should call each other cleanly
-* Show how to implement a clean login/auth flow
-* Or review your actual class implementation plan
-
-You're building something strong now 💪
