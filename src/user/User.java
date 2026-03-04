@@ -9,23 +9,7 @@ public abstract class User {
 
     // Constructor using "this" directly
     public User(String id, String name, String email, String password) {
-
-        if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("User ID cannot be null or empty.");
-        }
-
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Name is required.");
-        }
-
-        if (email == null || !email.contains("@")) {
-            throw new IllegalArgumentException("Invalid email format.");
-        }
-
-        if (password == null || password.length() < 6) {
-            throw new IllegalArgumentException("Password must be at least 6 characters.");
-        }
-
+        login(email, password, name);
         this.id = id;
         this.name = name;
         this.email = email;
@@ -45,7 +29,25 @@ public abstract class User {
         return email;
     }
 
-    protected String getPassword() {
+    public String getPassword() {
         return password;
     }
+
+    // Methods
+    public boolean login(String email, String password, String name){
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name is required.");
+        }
+
+        if (email == null || !email.contains("@")) {
+            throw new IllegalArgumentException("Invalid email format.");
+        }
+
+        if (password == null || password.length() < 6) {
+            throw new IllegalArgumentException("Password must be at least 6 characters.");
+        }
+        return true;
+    }
+
+    public abstract void performRoleAction();
 }

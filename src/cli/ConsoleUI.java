@@ -4,22 +4,22 @@ import java.util.Scanner;
 
 import user.Admin;
 import user.Customer;
+import user.User;
 import util.InputUtil;
 
 public class ConsoleUI {
     private static Scanner scanner = new Scanner(System.in);
     private Menu menu = new Menu();
+    private User user;
 
     public void start(){
         int ch;
         boolean isLogin = true;
+        ch =  showLoginMenu();
         do {
-            ch =  showLoginMenu();
             switch (ch) {
                 case 1:
-                    System.out.println("==== User type =====");
-                    int userChoice = menu.displayMainMenu(scanner);
-                    handleUserInput(userChoice);
+                    handleUserInput();
                     break;
                 case 0:
                     isLogin = false;
@@ -30,27 +30,44 @@ public class ConsoleUI {
         } while (isLogin);
     }
 
-    public void handleUserInput(int choice){
-        System.out.println("==== User Login ====");
+    public void handleUserInput(){
+        boolean isContinue = true;
         
-        String id = InputUtil.userIDenerateID();
-        String name = InputUtil.readString("Enter Name: ", scanner);
-        String email = InputUtil.readString("Enter Email: ", scanner);
-        String password = InputUtil.readString("Enter Password: ", scanner);
+        try {
+            while (isContinue) {
+        
+            System.out.println("==== User type =====");
+            int userChoice = menu.displayMainMenu(scanner);
 
-        switch (choice) {
-            case 1: // Admin
-                Admin admin = new Admin(id, name, email, password);
-                showAdminOptions();
+            System.out.println("==== User Login ====");
+            
+            String id = InputUtil.userIDenerateID();
+            String name = InputUtil.readString("Enter Name: ", scanner);
+            String email = InputUtil.readString("Enter Email: ", scanner);
+            String password = InputUtil.readString("Enter Password: ", scanner);
+        
+            switch (userChoice) {
+                case 1: // Admin
+                    user = new Admin(id, name, email, password);
+                    showAdminOptions();
+                    break;
+                case 2: // Customer
+                    user = new Customer(id, name, email, password);
+                    showACustomerOptions();
                 break;
-            case 2: // Customer
-                Customer customer = new Customer(id, name, email, password);
-                showACustomerOptions();
-            break;
-            default:
+
+                case 0:
+                    isContinue = false; 
                 break;
+                default:
+                    break;
+            }
+        } 
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
     }
+        
 
     public void showAdminOptions(){
         menu.AdminOptions();
