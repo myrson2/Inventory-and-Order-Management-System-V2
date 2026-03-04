@@ -6,4 +6,9 @@ public class Customer extends User{
         super(id, name, email, password);
     }
     
+    @Override
+    public void performRoleAction() {
+       
+        
+    }
 }
