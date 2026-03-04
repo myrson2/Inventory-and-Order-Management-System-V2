@@ -37,10 +37,10 @@ public class InputUtil {
                 int num = Integer.parseInt(input);
 
                 // Check if number is in valid range 0–3
-                if (num >= 0 && num <= 3) {
+                if (num >= 0 && num < 3) {
                     return num; // valid input
                 } else {
-                    System.out.println("Invalid choice. Please enter a number between 0 and 3.");
+                    System.out.println("Invalid choice. Please enter a number 1 and 2.");
                 }
 
             } catch (NumberFormatException e) {
