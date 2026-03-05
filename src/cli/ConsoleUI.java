@@ -109,9 +109,9 @@ public class ConsoleUI {
 
                                 break;
                             case 2: // Update Stock
-                                
+                                inventoryService.
                                 break;
-                            case 3: // View all Orders
+                            case 3: // View all Orders 
                                 
                                 break;
                             case 4: // View Logs

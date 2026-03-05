@@ -1,6 +1,6 @@
+import application.inventory.InventoryService;
 import cli.ConsoleUI;
-import inventory.InventoryHistory;
-import inventory.InventoryService;
+import domain.inventory.InventoryHistory;
 
 public class App {
     public static void main(String[] args) throws Exception {

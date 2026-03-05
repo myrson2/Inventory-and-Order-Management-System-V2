@@ -1,504 +1,512 @@
+
+---
+
 # SmartStock v2
 
-## Advanced Inventory & Order Management System (Java OOP + File Persistence + CLI Layer)
+**Layered Inventory & Order Management System (Java | CLI Adapter | File Persistence)**
+
+---
+
+## 🏗 Architectural Overview
+
+SmartStock v2 follows a **layered backend architecture** inspired by Spring Boot and Domain-Driven Design (DDD).
+
+The system separates:
+
+* **Domain Layer** → Core business entities (pure models)
+* **Application Layer** → Business use cases and orchestration
+* **Infrastructure Layer** → Technical implementations (file, logging, notifications)
+* **Presentation Layer** → CLI adapter
+
+### Layered Dependency Flow
+
+```text
+CLI → Application → Domain
+             ↓
+      Infrastructure
+             ↓
+            Util
+```
+
+### Architectural Rules
+
+* CLI Layer – Handles user interaction and input/output.
+
+* Application Layer – Orchestrates use cases and business workflows.
+
+* Domain Layer – Contains pure business models and core rules.
+
+* Infrastructure Layer – Technical implementations (file handling, logging, notifications).
+
+* Util Layer – Shared helper utilities used across layers.
 
 ---
 
 # 📂 Updated Project Structure
 
-```
+```text
 smartstock/
 │
-├── cli/
+├── cli/                         # Presentation Layer
 │   ├── ConsoleUI.java
-│   ├── Menu.java
+│   └── Menu.java
 │
-├── product/
-│   ├── Product.java
-│   ├── PerishableProduct.java
-│   ├── NonPerishableProduct.java
+├── domain/                      # Core Business Models (No external dependencies)
+│   ├── product/
+│   │   ├── Product.java
+│   │   ├── PerishableProduct.java
+│   │   └── NonPerishableProduct.java
+│   │
+│   ├── inventory/
+│   │   └── Inventory.java
+│   │
+│   ├── order/
+│   │   ├── Order.java
+│   │   ├── OrderItem.java
+│   │   └── OrderStatus.java
+│   │
+│   └── user/
+│       ├── User.java
+│       ├── Admin.java
+│       └── Customer.java
 │
-├── inventory/
-│   ├── Inventory.java
-│   ├── InventoryService.java
-│   ├── InventoryHistory.java
+├── application/                 # Business Use Cases / Services
+│   ├── inventory/
+│   │   └── InventoryService.java
+│   │
+│   ├── order/
+│   │   └── OrderService.java
+│   │
+│   └── user/
+│       ├── UserService.java
+│       ├── AdminService.java
+│       └── CustomerService.java
 │
-├── user/
-│   ├── User.java
-│   ├── Admin.java
-│   ├── Customer.java
+├── infrastructure/              # Technical Implementations
+│   ├── file/
+│   │   └── FileManager.java
+│   │
+│   ├── history/
+│   │   ├── InventoryHistory.java
+│   │   └── OrderHistory.java
+│   │
+│   ├── log/
+│   │   └── LoggerService.java
+│   │
+│   └── notification/
+│       └── NotificationService.java
 │
-├── order/
-│   ├── Order.java
-│   ├── OrderItem.java
-│   ├── OrderStatus.java
-│   ├── OrderService.java
-│   ├── OrderHistory.java
+├── util/                        # Shared Utilities (Stateless Helpers)
+│   ├── IdGenerator.java
+│   ├── DateUtils.java
+│   ├── InputValidator.java
+│   └── StringFormatter.java
 │
-├── exception/
-│   ├── InsufficientStockException.java
-│   ├── ProductNotFoundException.java
-│   ├── InvalidOrderException.java
-│   ├── UnauthorizedActionException.java
-│
-├── notification/
-│   ├── Notification.java
-│   ├── NotificationService.java
-│
-├── log/
-│   ├── LoggerService.java
-│
-├── file/
-│   ├── FileManager.java
-│
-└── Main.java
+└── exception/                   # Custom Exceptions
+    ├── InsufficientStockException.java
+    └── EntityNotFoundException.java
 ```
 
 ---
 
-# 🔹 cli Package
-
-Handles all console interaction. No business logic here.
+# 📌 Component Responsibilities
 
 ---
 
-## 1️⃣ ConsoleUI
+# 1️⃣ Presentation Layer — `cli`
 
-**Purpose:**
-Controls the entire CLI workflow and connects user input to services.
+## ConsoleUI
 
-### Fields
+Acts as the application entry point and user interaction controller.
 
-* `Scanner scanner`
-  → Used to capture user input.
+### Responsibilities
 
-* `InventoryService inventoryService`
-  → Handles inventory-related operations.
+* Manage login flow
+* Route commands based on user role
+* Delegate actions to appropriate services
+* Handle input/output formatting only
 
-* `OrderService orderService`
-  → Handles order-related operations.
+### Key Methods
 
-* `User currentUser`
-  → Stores the logged-in user.
+* `start()` → Initializes and starts CLI loop.
+* `showLoginMenu()` → Displays authentication options.
+* `showAdminMenu()` → Displays admin operations.
+* `showCustomerMenu()` → Displays customer operations.
+* `handleUserInput()` → Delegates actions to services.
+* `logout()` → Ends session.
+
+No validation or business rules here.
 
 ---
+
+## Menu
+
+Provides reusable CLI menu rendering.
 
 ### Methods
 
-* `start()`
-  → Entry point of CLI system.
-
-* `showLoginMenu()`
-  → Displays login options (Admin/Customer).
-
-* `showAdminMenu()`
-  → Displays admin options.
-
-* `showCustomerMenu()`
-  → Displays customer options.
-
-* `handleUserInput()`
-  → Routes input to correct service methods.
+* `displayMainMenu()` → Prints main menu.
+* `displayAdminOptions()` → Prints admin commands.
+* `displayCustomerOptions()` → Prints customer commands.
 
 ---
 
-## 2️⃣ Menu
+# 2️⃣ Domain Layer — `domain`
 
-**Purpose:**
-Contains reusable static menu-printing methods.
-
-### Methods
-
-* `displayMainMenu()`
-* `displayAdminOptions()`
-* `displayCustomerOptions()`
-
-No logic. Only UI formatting.
+Pure business models.
+No service calls.
+No file access.
+No logging.
 
 ---
 
-# 🔹 product Package
+## domain.product
+
+### Product (Abstract)
+
+Represents a product entity.
+
+* `increaseStock(int)` → Adds stock quantity.
+* `decreaseStock(int)` → Reduces stock safely.
+* `getProductDetails()` → Returns formatted summary.
 
 ---
 
-## 1️⃣ Product (Base Class)
+### PerishableProduct
 
-### Fields
-
-* `id (String)`
-  → Unique identifier. Must not be null or empty.
-
-* `name (String)`
-  → Product name. Required field.
-
-* `price (double)`
-  → Must be greater than 0.
-
-* `quantity (int)`
-  → Cannot be negative.
+* `isExpired()` → Checks expiration status.
+* `getProductDetails()` → Returns product details including expiration.
 
 ---
 
-### Methods
+### NonPerishableProduct
 
-* `increaseStock(int amount)`
-  → Adds stock. Amount must be positive.
-
-* `decreaseStock(int amount)`
-  → Reduces stock. Cannot go below zero.
-
-* `getProductDetails()`
-  → Returns formatted product info.
+* `getProductDetails()` → Returns product details including warranty.
 
 ---
 
-## 2️⃣ PerishableProduct
+## domain.inventory
 
-### Additional Field
+### Inventory
 
-* `expirationDate (LocalDate)`
-  → Must not be null. Used to validate expiration.
+Encapsulates in-memory product collection.
 
----
+* `addProduct(Product)` → Adds product to storage.
+* `removeProduct(String)` → Removes product by ID.
+* `getProductById(String)` → Retrieves product.
+* `getAllProducts()` → Returns all products.
 
-### Methods
-
-* `isExpired()`
-  → Returns true if expiration date is before today.
-
-* `getProductDetails()`
-  → Includes expiration date in output.
+No persistence or validation logic.
 
 ---
 
-## 3️⃣ NonPerishableProduct
+## domain.user
 
-### Additional Field
+### User (Abstract)
 
-* `warrantyMonths (int)`
-  → Must be zero or positive.
+Represents authenticated identity.
 
----
+Fields:
 
-### Methods
+* id
+* name
+* email
+* password
 
-* `getProductDetails()`
-  → Includes warranty info.
-
----
-
-# 🔹 inventory Package
+No operational logic.
 
 ---
 
-## 1️⃣ Inventory
+### Admin
 
-**Purpose:** Stores product collection.
+Represents administrator identity.
 
-### Fields
-
-* `products (List<Product>)`
-  → Central in-memory product storage.
+POJO only.
 
 ---
 
-### Methods
+### Customer
 
-* `addProduct(Product product)`
-  → Adds product if ID does not exist.
+Represents customer identity.
 
-* `removeProduct(String productId)`
-  → Removes product if exists.
-
-* `getProductById(String productId)`
-  → Returns product or throws exception.
-
-* `getAllProducts()`
-  → Returns list of products.
+POJO only.
 
 ---
 
-## 2️⃣ InventoryService
+## domain.order
 
-**Purpose:** Business logic layer for inventory.
+### Order
 
-### Fields
+Represents transactional aggregate.
 
-* `Inventory inventory`
-* `FileManager fileManager`
-* `LoggerService loggerService`
-* `InventoryHistory inventoryHistory`
-* `NotificationService notificationService`
-
----
-
-### Methods
-
-* `addProduct(Product product)`
-  → Validates and saves product.
-
-* `updateStock(String productId, int amount)`
-  → Validates and updates stock.
-
-* `checkLowStock(Product product)`
-  → Triggers notification if stock < 5.
-
-* `loadInventory()`
-  → Loads products from file.
-
-* `saveInventory()`
-  → Saves products to file.
+* `addItem(OrderItem)` → Adds line item.
+* `calculateTotal()` → Computes total cost.
+* `changeOrderStatus(OrderStatus)` → Updates lifecycle state.
+* `validateOrder()` → Validates integrity before confirmation.
 
 ---
 
-## 3️⃣ InventoryHistory
+### OrderItem
 
-### Methods
-
-* `recordStockIncrease(String productId, int amount)`
-* `recordStockDecrease(String productId, int amount)`
-* `recordProductRemoval(String productId)`
-
-Appends entries to `inventory_history.txt`.
+* `calculateSubTotal()` → Computes item subtotal.
+* `getItemDetails()` → Returns formatted item details.
 
 ---
 
-# 🔹 user Package
+### OrderStatus
+
+Enum representing order lifecycle:
+
+* PENDING
+* CONFIRMED
+* SHIPPED
+* DELIVERED
+* CANCELLED
 
 ---
 
-## 1️⃣ User (Abstract)
+# 3️⃣ Application Layer — `application`
 
-### Fields
-
-* `id`
-* `name`
-* `email`
-* `password` (for simple authentication)
+Contains all business logic and use cases.
 
 ---
 
-### Methods
+## application.user
 
-* `login(String email, String password)`
-  → Validates credentials.
+### UserService
 
-* `viewProducts()`
+Handles authentication and session state.
 
-* `performRoleAction()` (abstract)
-
----
-
-## 2️⃣ Admin
-
-### Methods
-
-* `addProduct(Product product)`
-* `updateStock(String productId, int amount)`
-* `viewAllOrders()`
-* `viewLogs()`
-* `viewInventoryHistory()`
+* `login(String, String)` → Authenticates and returns User.
+* `logout()` → Clears active session.
+* `getCurrentUser()` → Returns logged-in user.
 
 ---
 
-## 3️⃣ Customer
+### AdminService
 
-### Fields
+Handles privileged operations.
 
-* `orders (List<Order>)`
-  → Stores personal order history.
+Injected:
 
----
+* InventoryService
 
-### Methods
+* OrderService
 
-* `placeOrder(Order order)`
-* `cancelOrder(String orderId)`
-* `viewOrderHistory()`
+* LoggerService
 
----
+* InventoryHistory
 
-# 🔹 order Package
+* `addProduct(Product)` → Validates and persists product.
 
----
+* `updateStock(String, int)` → Adjusts product quantity.
 
-## 1️⃣ Order
+* `removeProduct(String)` → Deletes product.
 
-### Fields
+* `viewAllOrders()` → Retrieves all orders.
 
-* `orderId (String)`
-* `customer (Customer)`
-* `items (List<OrderItem>)`
-* `totalAmount (double)`
-* `orderStatus (OrderStatus)`
-* `createdAt (LocalDateTime)`
+* `viewInventoryHistory()` → Returns audit records.
+
+* `viewLogs()` → Retrieves system logs.
 
 ---
 
-### Methods
+### CustomerService
 
-* `addItem(Product product, int quantity)`
-* `calculateTotal()`
-* `changeOrderStatus(OrderStatus newStatus)`
-* `validateOrder()`
+Handles customer workflows.
 
----
+Injected:
 
-## 2️⃣ OrderItem
+* OrderService
 
-### Fields
+* InventoryService
 
-* `product`
-* `quantity`
-* `subTotal`
+* LoggerService
 
----
+* `browseProducts()` → Retrieves available products.
 
-### Methods
+* `createOrder(Customer)` → Initializes new order.
 
-* `calculateSubTotal()`
-* `getItemDetails()`
+* `addItemToOrder(Order, Product, int)` → Adds validated product.
 
----
+* `finalizeOrder(Order)` → Completes transaction.
 
-## 3️⃣ OrderStatus (Enum)
+* `cancelOrder(String)` → Cancels eligible order.
 
-Values:
-
-* `PENDING`
-* `CONFIRMED`
-* `SHIPPED`
-* `DELIVERED`
-* `CANCELLED`
+* `viewOrderHistory(Customer)` → Retrieves customer orders.
 
 ---
 
-## 4️⃣ OrderService
+## application.inventory
 
-### Fields
+### InventoryService
 
-* `FileManager fileManager`
-* `LoggerService loggerService`
-* `OrderHistory orderHistory`
-* `InventoryService inventoryService`
+Central inventory business logic.
 
----
+Injected:
 
-### Methods
+* Inventory
 
-* `createOrder(Customer customer)`
-* `addItemToOrder(Order order, Product product, int quantity)`
-* `finalizeOrder(Order order)`
-* `cancelOrder(String orderId)`
-* `loadOrders()`
-* `saveOrders()`
+* FileManager
 
----
+* LoggerService
 
-## 5️⃣ OrderHistory
+* InventoryHistory
 
-### Methods
+* NotificationService
 
-* `recordOrderCreation(String orderId)`
-* `recordStatusChange(String orderId, OrderStatus status)`
-* `recordCancellation(String orderId)`
+* `addProduct(Product)` → Validates and saves product.
 
----
+* `updateStock(String, int)` → Safely updates stock.
 
-# 🔹 exception Package
+* `removeProduct(String)` → Removes product and logs event.
 
-All extend `RuntimeException`.
+* `checkLowStock(Product)` → Triggers notification if threshold reached.
 
-* `InsufficientStockException`
-* `ProductNotFoundException`
-* `InvalidOrderException`
-* `UnauthorizedActionException`
+* `loadInventory()` → Loads products from storage.
 
-Each must:
-
-* Accept custom message
-* Be thrown only from service layer
+* `saveInventory()` → Persists products.
 
 ---
 
-# 🔹 notification Package
+## application.order
+
+### OrderService
+
+Handles transactional order processing.
+
+Injected:
+
+* FileManager
+
+* LoggerService
+
+* OrderHistory
+
+* InventoryService
+
+* `createOrder(Customer)` → Creates order instance.
+
+* `addItemToOrder(Order, Product, int)` → Adds validated item.
+
+* `finalizeOrder(Order)` → Confirms order and updates inventory.
+
+* `cancelOrder(String)` → Cancels order if allowed.
+
+* `loadOrders()` → Loads persisted orders.
+
+* `saveOrders()` → Saves orders to file.
 
 ---
 
-## 1️⃣ Notification
+# 4️⃣ Infrastructure Layer — `infrastructure`
 
-### Fields
-
-* `message`
-* `timestamp`
-
----
-
-## 2️⃣ NotificationService
-
-### Methods
-
-* `notify(String message)`
-* `notifyLowStock(Product product)`
-* `notifyOrderStatusChange(Order order)`
-
-Outputs to console.
-
----
-
-# 🔹 log Package
-
----
-
-## LoggerService
-
-### Methods
-
-* `logInfo(String message)`
-* `logError(String message)`
-* `logWarning(String message)`
-
-Writes to `logs.txt`.
-
----
-
-# 🔹 file Package
+Handles technical implementations only.
 
 ---
 
 ## FileManager
 
-### Responsibilities
+* `saveProducts(List<Product>)` → Persists product data.
+* `loadProducts()` → Loads product data.
+* `saveOrders(List<Order>)` → Persists order data.
+* `loadOrders()` → Loads order data.
+* `appendToFile(String, String)` → Appends audit/log entries.
 
-* Handle all file read/write operations.
+---
 
-### Methods
+## LoggerService
 
-* `saveProducts(List<Product>)`
-* `loadProducts()`
-* `saveOrders(List<Order>)`
-* `loadOrders()`
-* `appendToFile(String filename, String content)`
+* `logInfo(String)` → Writes informational log.
+* `logWarning(String)` → Writes warning log.
+* `logError(String)` → Writes error log.
 
-No business logic here.
+---
+
+## NotificationService
+
+* `notify(String)` → Displays system notification.
+* `notifyLowStock(Product)` → Alerts low inventory.
+* `notifyOrderStatusChange(Order)` → Alerts order updates.
+
+---
+
+## InventoryHistory
+
+* `recordStockIncrease(String, int)` → Logs stock addition.
+* `recordStockDecrease(String, int)` → Logs stock deduction.
+* `recordProductRemoval(String)` → Logs deletion event.
+
+---
+
+## OrderHistory
+
+* `recordOrderCreation(String)` → Logs order creation.
+* `recordStatusChange(String, OrderStatus)` → Logs status updates.
+* `recordCancellation(String)` → Logs cancellation event.
+
+---
+# 🧩 Util Package Responsibilities
+
+The util package contains reusable, stateless helper classes used across the system.
+
+* IdGenerator - Generates unique identifiers for domain entities.
+
+* DateUtils - Provides centralized date parsing, formatting, and comparison logic.
+
+* InputValidator - Validates CLI input to ensure data integrity before reaching the application layer.
+
+* StringFormatter - Standardizes output formatting for consistent console display.
+
+---
+# 🔐 Exception Layer
+
+All exceptions extend RuntimeException.
+
+Thrown only from:
+
+* Application layer
+
+Examples:
+
+* InsufficientStockException
+* ProductNotFoundException
+* InvalidOrderException
+* UnauthorizedActionException
 
 ---
 
 # 🔄 Main.java
 
-**Purpose:**
-Initializes services and starts ConsoleUI.
+Acts as a lightweight dependency injection container.
+
+Responsibilities:
+
+* Instantiate infrastructure components
+* Wire application services
+* Inject dependencies via constructors
+* Start ConsoleUI
 
 ---
 
-# 🔥 Now This Project Demonstrates:
+# 🚀 What This Architecture Demonstrates
 
-* Layered Architecture
-* Clean Separation of Concerns
-* Exception-Driven Design
-* File-Based Persistence
-* Logging & History Systems
-* Role-Based Access
-* CLI Application Structure
+* Layered backend structure
+* Domain purity
+* Service-based business logic
+* Manual dependency injection
+* Clear separation of technical concerns
+* Role-based access control
+* Audit and logging systems
+* Scalable, Spring-ready architecture
+
+---
+
+This structure allows SmartStock v2 to transition easily into:
+
+* Spring Boot REST API
+* Database persistence (JPA)
+* Multi-user systems
+* Enterprise backend systems
 
 ---
