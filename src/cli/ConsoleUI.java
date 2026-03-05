@@ -2,6 +2,8 @@ package cli;
 
 import java.util.Scanner;
 
+import application.inventory.InventoryService;
+import domain.product.Product;
 import domain.user.Admin;
 import domain.user.Customer;
 import domain.user.User;
@@ -10,9 +12,12 @@ import util.InputUtil;
 
 public class ConsoleUI {    
     private Scanner scan;
+    private InventoryService inventoryService;
     private User user;
+    private Product product;
 
-    public ConsoleUI(Scanner scan){
+    public ConsoleUI(InventoryService inventoryService, Scanner scan){
+        this.inventoryService = inventoryService;
         this.scan = scan;
     }
 
@@ -68,6 +73,47 @@ public class ConsoleUI {
 
         do{
             Menu.AdminOptions();
+            int choice = InputUtil.readInt("> ", scan);
+
+            switch (choice) {
+                case 1: // Add product
+                boolean correctType = true;
+                    while (correctType) {
+                         System.out.println("""
+                                Product Type:
+                                1. Perishable 
+                                2. Non-Perishable 
+                                """);
+                        int type = InputUtil.readInt("> ", scan);
+                        if(type == 1 || type == 2){
+                            
+                            String id = IdGenerator.productIDGenerator();
+                            String name = InputUtil.readString("Product Name: ", scan);
+                            double price = InputUtil.readDouble("Price: ", scan);
+                            int quantity = InputUtil.readInt("Quantity: ", scan);
+                            
+                            switch(type){
+                                case 1:
+                                    
+                                    break;
+                                case 2:
+
+                                    break;
+                            }
+
+                        } else {
+                            System.out.println("Choose Among the Product types.");
+                        }
+                    }
+                break;
+
+                case 2:
+                    
+                break;
+                default:
+                    break;
+            }
+
         }while(running);
     }
 
