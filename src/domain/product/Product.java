@@ -1,6 +1,6 @@
 package domain.product;
 
-public class Product {
+public abstract  class Product {
 
     // Fields (Encapsulated)
     private String id;

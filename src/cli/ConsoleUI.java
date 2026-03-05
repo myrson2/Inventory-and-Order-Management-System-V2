@@ -1,23 +1,29 @@
 package cli;
 
+import java.time.LocalDate;
 import java.util.Scanner;
-
-import application.inventory.InventoryService;
+import application.user.AdminService;
+import application.user.UserService;
+import domain.product.NonPerishableProducts;
+import domain.product.PerishableProducts;
 import domain.product.Product;
 import domain.user.Admin;
 import domain.user.Customer;
 import domain.user.User;
+import util.DateUtils;
 import util.IdGenerator;
 import util.InputUtil;
 
 public class ConsoleUI {    
     private Scanner scan;
-    private InventoryService inventoryService;
     private User user;
+    private AdminService adminService;
+    private UserService userService;
     private Product product;
 
-    public ConsoleUI(InventoryService inventoryService, Scanner scan){
-        this.inventoryService = inventoryService;
+    public ConsoleUI(UserService userService, AdminService adminService, Scanner scan){
+        this.userService = userService;
+        this.adminService = adminService;
         this.scan = scan;
     }
 
@@ -36,39 +42,47 @@ public class ConsoleUI {
 
     public void handleUserInput(){
         boolean running = true;
+        try {
+            System.out.println("\n=== User Auth ===");
+            String id = IdGenerator.userIDenerateID();
+            String email = InputUtil.readString("Enter Email: ", scan);
+            String password = InputUtil.readString("Enter Password: ", scan);
+            boolean isLogin = userService.login(email, password);
 
-        String id = IdGenerator.userIDenerateID();
-        String email = InputUtil.readString("Enter Email: ", scan);
-        String password = InputUtil.readString("Enter Password", scan);
+            if (isLogin) {
+            do {
+                System.out.println("\nSelect User Type: | Admin || Customer || Exit |");
+                String userType = InputUtil.readString(">", scan).trim().toLowerCase();
 
-        do {
-            System.out.println("\nSelect User Type: | Admin || Customer || Exit |");
-            String userType = InputUtil.readString(">", scan).trim().toLowerCase();
+                switch (userType) {
+                    case "admin":
+                        String admin = name(scan);
+                        user = new Admin(id, admin, email, password);
+                        adminDashboard(user);
 
-            switch (userType) {
-                case "admin":
-                    String admin = name(scan);
-                    user = new Admin(id, admin, email, password);
-                    adminDashboard();
+                        break;
+                    case "customer":
+                        String customer = name(scan);
+                        user = new Customer(id, customer, email, password);
+                        customerDashboard();
 
-                    break;
-                case "customer":
-                    String customer = name(scan);
-                    user = new Customer(id, customer, email, password);
-                    customerDashboard();
+                        break;
+                    case "exit":
+                        running = false;
+                        break;
+                    default:
+                        System.out.println("Choose Among the User types.");
+                        break;
+                }
+            } while (running);
+        } 
 
-                    break;
-                case "exit":
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Choose Among the User types.");
-                    break;
-            }
-        } while (running);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    public void adminDashboard(){
+    public void adminDashboard(User user){
         boolean running = true;
 
         do{
@@ -93,21 +107,25 @@ public class ConsoleUI {
                             int quantity = InputUtil.readInt("Quantity: ", scan);
                             
                             switch(type){
-                                case 1:
-                                    
+                                case 1: // Perishable
+                                    LocalDate expirationDate = DateUtils.readLocalDate("Enter Expiration Date: ", scan);
+                                    product = new PerishableProducts(id, name, price, quantity, expirationDate);
                                     break;
-                                case 2:
-
+                                case 2: // Non-Perishable
+                                    int warrantyInMonths = InputUtil.readInt("Enter Warranty (Months): ", scan);
+                                    product = new NonPerishableProducts(id, name, price, quantity, warrantyInMonths);
                                     break;
                             }
+                            adminService.addProduct(product);
 
+                            correctType = false;
                         } else {
                             System.out.println("Choose Among the Product types.");
                         }
                     }
                 break;
 
-                case 2:
+                case 2: // Update Stock
                     
                 break;
                 default:

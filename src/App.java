@@ -1,6 +1,8 @@
 import java.util.Scanner;
 
 import application.inventory.InventoryService;
+import application.user.AdminService;
+import application.user.UserService;
 import cli.ConsoleUI;
 
 public class App {
@@ -8,7 +10,9 @@ public class App {
         System.out.println("==== Welcome to SmartStock System ====");
         Scanner scan = new Scanner(System.in);
         InventoryService inventoryService = new InventoryService();
-        ConsoleUI consoleUI = new ConsoleUI(inventoryService, scan);
+        AdminService adminService = new AdminService(inventoryService);
+        UserService userService = new UserService();
+        ConsoleUI consoleUI = new ConsoleUI(userService, adminService, scan);
 
         consoleUI.start();
     }

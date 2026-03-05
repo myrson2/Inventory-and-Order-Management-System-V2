@@ -9,4 +9,10 @@ public class InventoryService {
    public void addProduct(Product product){
         inventory.addProduct(product);
    }
+
+   public void updateProduct(String id, int quantity){
+         Product product = inventory.getProductByID(id);
+         //increase or decrease
+         product.setQuantity(quantity);
+   }
 }

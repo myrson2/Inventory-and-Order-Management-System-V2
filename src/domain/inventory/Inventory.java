@@ -32,4 +32,13 @@ public class Inventory {
             }
         }
     }
+
+    public Product getProductByID(String id){
+        for (Product product : products) {
+            if(product.getId().contains(id)){
+                return product;
+            }   
+        }
+        return null;
+    }
 }
