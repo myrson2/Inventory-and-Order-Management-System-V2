@@ -1,6 +1,4 @@
-package user;
-
-import product.Product;
+package domain.user;
 
 public class Admin extends User{
     public Admin(String id, String name, String email, String password) {
@@ -11,8 +9,5 @@ public class Admin extends User{
     public void performRoleAction() {
         System.out.printf("You are now Admin. Hi %s!", super.getName());
     }
-    
-    public void addProduct(Product product){
-        inventory
-    }
+
 }

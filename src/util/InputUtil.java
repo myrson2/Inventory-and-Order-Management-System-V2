@@ -3,16 +3,10 @@ package util;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.util.Set;
 
 public class InputUtil {
-    private static final Set<Integer> userUsedIds = new HashSet<>();
-    private static final Set<Integer> productUsedIds = new HashSet<>();
-
-
     public static String readString(String prompt, Scanner scanner) {
         String input = "";
         while (true) {
@@ -66,55 +60,13 @@ public class InputUtil {
                 if (num >= 0 && num < 3) {
                     return num; // valid input
                 } else {
-                    System.out.println("Invalid choice. Please enter a number 1 and 2.");
+                    System.out.println("Error Found: Invalid choice. Please enter a number 1 and 2.");
                 }
 
             } catch (NumberFormatException e) {
-                System.out.println("Invalid integer. Please enter a valid number.");
+                System.out.println("Error found: Invalid integer. Please enter a valid number.");
             }
         }
-    }
-
-    public static String userIDenerateID(){
-        int currentId = 0;
-        final int MAX_ID = 1000;
-
-        if (currentId > MAX_ID) {
-            throw new IllegalStateException("Maximum ID limit reached.");
-        }
-
-        while (userUsedIds.contains(currentId)) {
-            currentId++;
-        }
-
-        int id = currentId;
-        userUsedIds.add(id);
-
-        String userId = String.valueOf(id);
-        currentId++;
-
-        return userId;
-    }
-
-    public static String productIDGenerator(){
-        int currentId = 0;
-        final int MAX_ID = 1000;
-
-        if (currentId > MAX_ID) {
-            throw new IllegalStateException("Maximum ID limit reached.");
-        }
-
-        while (userUsedIds.contains(currentId)) {
-            currentId++;
-        }
-
-        int id = currentId;
-        productUsedIds.add(id);
-
-        String productId = String.valueOf(id);
-        currentId++;
-
-        return productId;
     }
 
     public static LocalDate readLocalDate(String prompt, Scanner scanner) {

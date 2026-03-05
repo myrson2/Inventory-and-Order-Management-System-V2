@@ -1,20 +1,14 @@
 package cli;
 
-import java.util.Scanner;
-
-import util.InputUtil;
-
 public class Menu {
-    public int displayMainMenu(Scanner scanner){
+    public static void displayMainMenu(){
         System.out.print("""
-                1 - Admin
-                0 - Customer
+                1 - login 
+                2 - logout
                 """);
-        int ch = InputUtil.readMenu("> ", scanner);
-        return ch;
     }
 
-    public void AdminOptions(){
+    public static void AdminOptions(){
         System.out.println("""
                 0. Exit
                 1. Add Product
@@ -24,7 +18,15 @@ public class Menu {
                 5. View Inventory History
                 """);
     }
-    public void CustomerOptions(){
-        System.out.println("displat Custtomer");
+    public static void CustomerOptions(){
+        System.out.println("""
+            0. Exit
+            1. Browse Products
+            2. Create Order
+            3. Add Item to Order
+            4. Finalize Order
+            5. Cancel Order
+            6. View Order History    
+        """);
     }
 }

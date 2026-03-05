@@ -1,4 +1,4 @@
-package user;
+package domain.user;
 
 public class Customer extends User{
 

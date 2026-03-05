@@ -1,13 +1,11 @@
-import application.inventory.InventoryService;
+import java.util.Scanner;
 import cli.ConsoleUI;
-import domain.inventory.InventoryHistory;
 
 public class App {
     public static void main(String[] args) throws Exception {
         System.out.println("==== Welcome to SmartStock System ====");
-        InventoryHistory inventoryHistory = new InventoryHistory();
-        InventoryService inventoryService = new InventoryService(inventoryHistory);
-        ConsoleUI consoleUI = new ConsoleUI(inventoryService);
+        Scanner scan = new Scanner(System.in);
+        ConsoleUI consoleUI = new ConsoleUI(scan);
 
         consoleUI.start();
     }
