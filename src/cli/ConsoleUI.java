@@ -52,7 +52,7 @@ public class ConsoleUI {
             if (isLogin) {
             do {
                 System.out.println("\nSelect User Type: | Admin || Customer || Exit |");
-                String userType = InputUtil.readString(">", scan).trim().toLowerCase();
+                String userType = InputUtil.readString("> ", scan).trim().toLowerCase();
 
                 switch (userType) {
                     case "admin":
@@ -86,6 +86,10 @@ public class ConsoleUI {
         boolean running = true;
 
         do{
+            // display the details if correct here
+            adminService.checkInventory();
+            // display only 
+
             Menu.AdminOptions();
             int choice = InputUtil.readInt("> ", scan);
 
@@ -126,7 +130,10 @@ public class ConsoleUI {
                 break;
 
                 case 2: // Update Stock
+                    String productId = InputUtil.readString("Enter Product ID: ", scan);
+                    int amount = InputUtil.readInt("Enter amount (positive (increase) / negative (derease)): ", scan);
                     
+                    adminService.updateStock(productId, amount);
                 break;
                 default:
                     break;

@@ -12,4 +12,27 @@ public class PerishableProducts extends Product{
     public LocalDate getExpirationDate() {
         return expirationDate;
     }
+
+    @Override
+    public int increaseStock(int amount) {
+        int quantity = super.getQuantity();
+        quantity += amount;
+        super.setQuantity(quantity);
+
+        return quantity;
+    }
+
+    @Override
+    public int decreaseStock(int amount) {
+        int quantity = super.getQuantity();
+        quantity -= Math.abs(amount);
+        super.setQuantity(quantity);
+        
+        return quantity;
+    }
+
+    @Override
+    public void getProductDetails() {
+       System.out.printf("ID: %s || Name: %s || Price: %.2f || quantity: %d || Expiration Date: %s", super.getId(), super.getName(), super.getPrice(), super.getQuantity(), expirationDate);
+    }
 }

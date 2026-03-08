@@ -194,7 +194,7 @@ Encapsulates in-memory product collection.
 * `addProduct(Product)` → Adds product to storage.
 * `removeProduct(String)` → Removes product by ID.
 * `getProductById(String)` → Retrieves product.
-* `getAllProducts()` → Returns all products.
+* `checkInventory()` → Returns all products.
 
 No persistence or validation logic.
 
@@ -499,6 +499,14 @@ Responsibilities:
 * Role-based access control
 * Audit and logging systems
 * Scalable, Spring-ready architecture
+
+---
+
+# Future Enhancements
+* Apply mysql in this project.
+* Make a multiple inventories since this project only centralized for one inventory
+* Used java tools (Maven or Gradle) and Spring boot Framework.
+* Create a mobile app using java or web based for this project.
 
 ---
 

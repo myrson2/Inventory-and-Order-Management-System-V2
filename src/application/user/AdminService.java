@@ -14,7 +14,11 @@ public class AdminService {
         inventoryService.addProduct(product);
     }
 
-    public void updateProduct(String id, int newQuantity){
-        inventoryService.updateProduct(id, newQuantity);
+    public void updateStock(String id, int newQuantity){
+        inventoryService.updateStock(id, newQuantity);
+    }
+
+    public void checkInventory(){
+        inventoryService.checkInventory();
     }
 }

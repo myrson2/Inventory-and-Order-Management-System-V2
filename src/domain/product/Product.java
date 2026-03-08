@@ -1,6 +1,6 @@
 package domain.product;
 
-public abstract  class Product {
+public abstract class Product {
 
     // Fields (Encapsulated)
     private String id;
@@ -67,4 +67,8 @@ public abstract  class Product {
         }
         this.quantity = quantity;
     }
+
+    public abstract int increaseStock(int amount);
+    public abstract int decreaseStock(int amount);
+    public abstract void getProductDetails();
 }

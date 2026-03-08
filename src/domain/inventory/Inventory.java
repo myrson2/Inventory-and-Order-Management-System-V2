@@ -15,11 +15,13 @@ public class Inventory {
     }
 
     public void checkInventory(){
+        if(products == null) return;
+
         System.out.println("==== Non-Persishable Products ====");
         for (Product product : products) {
             if(product instanceof NonPerishableProducts){
                 NonPerishableProducts nonPerishableProducts = (NonPerishableProducts) product;
-                System.out.printf("ID: %s || Name: %s || Price: %.2f || quantity: %d || Warranty (Months): %d", nonPerishableProducts.getId(), nonPerishableProducts.getName(), nonPerishableProducts.getPrice(), nonPerishableProducts.getQuantity(), nonPerishableProducts.getWarrantyMonths());
+                nonPerishableProducts.getProductDetails();
             }
         }
 
@@ -27,10 +29,10 @@ public class Inventory {
         for (Product product : products) {
             if(product instanceof PerishableProducts){
                 PerishableProducts perishableProducts = (PerishableProducts) product;
-
-                System.out.printf("ID: %s || Name: %s || Price: %.2f || quantity: %d || Expiration Date: %s", perishableProducts.getId(), perishableProducts.getName(), perishableProducts.getPrice(), perishableProducts.getQuantity(), perishableProducts.getExpirationDate());
+                perishableProducts.getProductDetails();
             }
         }
+        System.out.println();
     }
 
     public Product getProductByID(String id){
