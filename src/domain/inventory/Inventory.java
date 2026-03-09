@@ -43,4 +43,8 @@ public class Inventory {
         }
         return null;
     }
+
+    public List<Product> getProducts() {
+        return products;
+    }
 }

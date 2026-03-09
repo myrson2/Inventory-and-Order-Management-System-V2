@@ -82,13 +82,11 @@ public class ConsoleUI {
         }
     }
 
-    public void adminDashboard(User user){
+        public void adminDashboard(User user){
         boolean running = true;
 
         do{
-            // display the details if correct here
             adminService.checkInventory();
-            // display only 
 
             Menu.AdminOptions();
             int choice = InputUtil.readInt("> ", scan);
@@ -121,6 +119,7 @@ public class ConsoleUI {
                                     break;
                             }
                             adminService.addProduct(product);
+                            
 
                             correctType = false;
                         } else {
@@ -135,6 +134,22 @@ public class ConsoleUI {
                     
                     adminService.updateStock(productId, amount);
                 break;
+
+                case 3: // remove product
+                     String productIdToRemove = InputUtil.readString("Enter Product ID: ", scan);
+
+                     adminService.removeProduct(productIdToRemove);
+                break;
+
+                case 4: // view all orders
+
+                break;
+
+                case 5: // view logs 
+                break;
+
+                case 6: // View Inventory History
+                    adminService.viewInventoryHistory();
                 default:
                     break;
             }
@@ -151,6 +166,6 @@ public class ConsoleUI {
     }
 
     static String name(Scanner scan){
-        return InputUtil.readString("EWhat should we call to you? >", scan);
+        return InputUtil.readString("EWhat should we call to you? > ", scan);
     }
 }   

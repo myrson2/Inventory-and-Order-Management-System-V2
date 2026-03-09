@@ -13,9 +13,10 @@ public class Menu {
                 0. Exit
                 1. Add Product
                 2. Update Stock
-                3. View All Orders
-                4. View Logs
-                5. View Inventory History
+                3. Remove Product
+                4. View All Orders
+                5. View Logs
+                6. View Inventory History
                 """);
     }
     public static void CustomerOptions(){

@@ -18,6 +18,14 @@ public class AdminService {
         inventoryService.updateStock(id, newQuantity);
     }
 
+    public void removeProduct(String id){
+        inventoryService.removeProduct(id);
+    }
+
+    public void viewInventoryHistory(){
+        inventoryService.viewInventoryHistory();
+    }
+
     public void checkInventory(){
         inventoryService.checkInventory();
     }

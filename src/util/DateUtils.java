@@ -1,6 +1,7 @@
 package util;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
@@ -19,5 +20,15 @@ public class DateUtils {
                 System.out.println("Invalid date format. Please use yyyy-MM-dd.");
             }
         }
+    }
+
+    public static String timeStamp(){
+        LocalDateTime myDateObj = LocalDateTime.now();
+        System.out.println("Before formatting: " + myDateObj);
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+
+        String formattedDate = myDateObj.format(myFormatObj);
+       
+        return formattedDate;
     }
 }
