@@ -50,32 +50,33 @@ public class ConsoleUI {
             boolean isLogin = userService.login(email, password);
 
             if (isLogin) {
-            do {
-                System.out.println("\nSelect User Type: | Admin || Customer || Exit |");
-                String userType = InputUtil.readString("> ", scan).trim().toLowerCase();
+                do {
+                    System.out.println("\nSelect User Type: | Admin || Customer || Exit |");
+                    String userType = InputUtil.readString("> ", scan).trim().toLowerCase();
 
-                switch (userType) {
-                    case "admin":
-                        String admin = name(scan);
-                        user = new Admin(id, admin, email, password);
-                        adminDashboard(user);
+                    switch (userType) {
+                        case "admin":
+                            String admin = name(scan);
+                            user = new Admin(id, admin, email, password);
+                            userService.addUser(user);
+                            adminDashboard(user);
 
-                        break;
-                    case "customer":
-                        String customer = name(scan);
-                        user = new Customer(id, customer, email, password);
-                        customerDashboard();
-
-                        break;
-                    case "exit":
-                        running = false;
-                        break;
-                    default:
-                        System.out.println("Choose Among the User types.");
-                        break;
-                }
-            } while (running);
-        } 
+                            break;
+                        case "customer":
+                            String customer = name(scan);
+                            user = new Customer(id, customer, email, password);
+                            userService.addUser(user);
+                            customerDashboard();
+                            break;
+                        case "exit":
+                            running = false;
+                            break;
+                        default:
+                            System.out.println("Choose Among the User types.");
+                            break;
+                    }
+                } while (running);
+            } 
 
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
@@ -131,13 +132,11 @@ public class ConsoleUI {
                 case 2: // Update Stock
                     String productId = InputUtil.readString("Enter Product ID: ", scan);
                     int amount = InputUtil.readInt("Enter amount (positive (increase) / negative (derease)): ", scan);
-                    
                     adminService.updateStock(productId, amount);
                 break;
 
                 case 3: // remove product
                      String productIdToRemove = InputUtil.readString("Enter Product ID: ", scan);
-
                      adminService.removeProduct(productIdToRemove);
                 break;
 
@@ -150,8 +149,16 @@ public class ConsoleUI {
 
                 case 6: // View Inventory History
                     adminService.viewInventoryHistory();
+                break;
+
+                case 0: // BREAK
+                    System.out.println("Exiting Admin Dashboard.....");
+                    System.out.println("(Enter again to exit)");
+                    scan.nextLine();
+                    running = false;
+                break;
                 default:
-                    break;
+                break;
             }
 
         }while(running);
@@ -161,6 +168,7 @@ public class ConsoleUI {
         boolean running = true;
 
         do{
+            userService.displayAdmin();
             Menu.CustomerOptions();
         }while(running);
     }

@@ -1,9 +1,14 @@
 package application.user;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import domain.user.Admin;
 import domain.user.User;
 
 public class UserService {
     private User user;
+    private List<User> users = new ArrayList<>();
 
     public boolean login(String email, String password){
 
@@ -15,6 +20,18 @@ public class UserService {
             throw new IllegalArgumentException("Password must be at least 6 characters.");
         }
         return true;
+    }
+
+    public void addUser(User user){
+        users.add(user);
+    }
+
+    public void displayAdmin(){
+        for (User user : users) {
+            if(user instanceof Admin){
+                System.out.println(user.getName());
+            }
+        }
     }
 
     public User getUser() {
