@@ -2,6 +2,8 @@ package cli;
 
 import java.time.LocalDate;
 import java.util.Scanner;
+
+import application.inventory.InventoryService;
 import application.user.AdminService;
 import application.user.UserService;
 import domain.product.NonPerishableProducts;
@@ -10,6 +12,7 @@ import domain.product.Product;
 import domain.user.Admin;
 import domain.user.Customer;
 import domain.user.User;
+import infrastructure.history.InventoryHistory;
 import util.DateUtils;
 import util.IdGenerator;
 import util.InputUtil;
@@ -17,24 +20,23 @@ import util.InputUtil;
 public class ConsoleUI {    
     private Scanner scan;
     private User user;
-    private AdminService adminService;
     private UserService userService;
     private Product product;
 
-    public ConsoleUI(UserService userService, AdminService adminService, Scanner scan){
+    public ConsoleUI(UserService userService, Scanner scan){
         this.userService = userService;
-        this.adminService = adminService;
         this.scan = scan;
     }
 
     public void start(){
-       while(true){
+        boolean running = true;
+        while(running){
             Menu.displayMainMenu();
             int choice = InputUtil.readMenu("Enter Choice: ", scan);
             if(choice == 1){
                 handleUserInput();
             } else {
-                //logout
+                running = false;
                 break;
             }
        }
@@ -93,8 +95,12 @@ public class ConsoleUI {
                     
                     // STEP 3: Route the user based on their specific class (Polymorphism)
                     if (loggedInUser instanceof Admin) {
+                        InventoryHistory inventoryHistory = new InventoryHistory();
+                        InventoryService inventoryService = new InventoryService(inventoryHistory);
+                        AdminService adminService = new AdminService(inventoryService);
+
                         System.out.println("Routing to Admin Dashboard...");
-                        adminDashboard(loggedInUser); // Pass the user to the admin dashboard
+                        adminDashboard(loggedInUser, adminService); // Pass the user to the admin dashboard
                         
                     } else if (loggedInUser instanceof Customer) {
                         System.out.println("Routing to Customer Dashboard...");
@@ -111,7 +117,7 @@ public class ConsoleUI {
         }
     }
 
-        public void adminDashboard(User user){
+        public void adminDashboard(User user, AdminService adminService){
         boolean running = true;
 
         do{
@@ -169,7 +175,7 @@ public class ConsoleUI {
                 break;
 
                 case 4: // view all orders
-
+                    System.out.println("// Still not implemented //");
                 break;
 
                 case 5: // view logs 

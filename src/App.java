@@ -10,11 +10,9 @@ public class App {
     public static void main(String[] args) throws Exception {
         System.out.println("==== Welcome to SmartStock System ====");
         Scanner scan = new Scanner(System.in);
-        InventoryHistory inventoryHistory = new InventoryHistory();
-        InventoryService inventoryService = new InventoryService(inventoryHistory);
-        AdminService adminService = new AdminService(inventoryService);
+       
         UserService userService = new UserService();
-        ConsoleUI consoleUI = new ConsoleUI(userService, adminService, scan);
+        ConsoleUI consoleUI = new ConsoleUI(userService, scan);
 
         consoleUI.start();
     }
