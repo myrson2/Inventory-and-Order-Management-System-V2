@@ -20,12 +20,14 @@ import util.InputUtil;
 public class ConsoleUI {    
     private Scanner scan;
     private User user;
+    private AdminService adminService;
     private UserService userService;
     private Product product;
 
-    public ConsoleUI(UserService userService, Scanner scan){
+    public ConsoleUI(UserService userService, AdminService adminService, Scanner scan){
         this.userService = userService;
         this.scan = scan;
+        this.adminService = adminService;
     }
 
     public void start(){
@@ -43,85 +45,87 @@ public class ConsoleUI {
     }
 
     public void handleUserInput(){
-        System.out.println("1 - Register");
-        System.out.println("2 - Log in");
-        int ch = InputUtil.readInt("> ", scan);
+        int choice;
+        
+        do{
+            System.out.println("1 - Register");
+            System.out.println("2 - Log in");
+            System.out.println("3 - Exit");
+            choice = InputUtil.readInt("> ", scan);
 
-        switch (ch) {
-            case 1: // User Registration
-                    try {
-                         boolean isRegistered = false;
-                               do{
-                                    System.out.println("\n=== User Auth ===");
-                                    String id = IdGenerator.userIDenerateID();
-                                    String email = InputUtil.readString("Enter Email: ", scan);
-                                    String password = InputUtil.readString("Enter Password: ", scan);
-                                    String userName = name(scan);
+            switch (choice) {
+                case 1: // User Registration
+                        try {
+                            boolean isRegistered = false;
+                                do{
+                                        System.out.println("\n=== User Auth ===");
+                                        String id = IdGenerator.userIDenerateID();
+                                        String email = InputUtil.readString("Enter Email: ", scan);
+                                        String password = InputUtil.readString("Enter Password: ", scan);
+                                        String userName = name(scan);
 
-                                            System.out.println("\nSelect User Type: | Admin || Customer || Exit |");
-                                            String userType = InputUtil.readString("> ", scan).trim().toLowerCase();
+                                                System.out.println("\nSelect User Type: | Admin || Customer || Exit |");
+                                                String userType = InputUtil.readString("> ", scan).trim().toLowerCase();
 
-                               
-                                     switch (userType) {
-                                        case "admin":
-                                            user = new Admin(id, userName, email, password);
-                                            break;
-                                        case "customer":
-                                            user = new Customer(id, userName, email, password);
-                                            break;
-                                        default:
-                                            System.out.println("Choose Among the User types.");
-                                            break;
-                                    }
+                                
+                                        switch (userType) {
+                                            case "admin":
+                                                user = new Admin(id, userName, email, password);
+                                                break;
+                                            case "customer":
+                                                user = new Customer(id, userName, email, password);
+                                                break;
+                                            default:
+                                                System.out.println("Choose Among the User types.");
+                                                break;
+                                        }
 
-                                    isRegistered = userService.registerUser(user);
-                               } while(!isRegistered);
+                                        isRegistered = userService.registerUser(user);
+                                } while(!isRegistered);
 
-                    } catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
-                    }
-                break;
-            
-            case 2: 
-                System.out.println("\n=== User Login ===");
-                String email = InputUtil.readString("Enter Email: ", scan);
-                String password = InputUtil.readString("Enter Password: ", scan);
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    break;
+                
+                case 2: 
+                    System.out.println("\n=== User Login ===");
+                    String email = InputUtil.readString("Enter Email: ", scan);
+                    String password = InputUtil.readString("Enter Password: ", scan);
 
-                // STEP 1: Call login and capture the returned User object
-                User loggedInUser = userService.login(email, password);
+                    // STEP 1: Call login and capture the returned User object
+                    User loggedInUser = userService.login(email, password);
 
-                // STEP 2: Check if login was successful (not null)
-                if (loggedInUser != null) {
-                    
-                    // STEP 3: Route the user based on their specific class (Polymorphism)
-                    if (loggedInUser instanceof Admin) {
-                        InventoryHistory inventoryHistory = new InventoryHistory();
-                        InventoryService inventoryService = new InventoryService(inventoryHistory);
-                        AdminService adminService = new AdminService(inventoryService);
-
-                        System.out.println("Routing to Admin Dashboard...");
-                        adminDashboard(loggedInUser, adminService); // Pass the user to the admin dashboard
+                    // STEP 2: Check if login was successful (not null)
+                    if (loggedInUser != null) {
                         
-                    } else if (loggedInUser instanceof Customer) {
-                        System.out.println("Routing to Customer Dashboard...");
-                        customerDashboard(loggedInUser); // Pass the user to the customer dashboard
-                    }
+                        // STEP 3: Route the user based on their specific class (Polymorphism)
+                        if (loggedInUser instanceof Admin) {
 
-                } else {
-                    // Login failed (it returned null)
-                    System.out.println("Please try again or register a new account.");
-                }
-                break;
-            default:
-                break;
-        }
+                            System.out.println("Routing to Admin Dashboard...");
+                            adminDashboard(loggedInUser); // Pass the user to the admin dashboard
+                            
+                        } else if (loggedInUser instanceof Customer) {
+                            System.out.println("Routing to Customer Dashboard...");
+                            customerDashboard(loggedInUser); // Pass the user to the customer dashboard
+                        }
+
+                    } else {
+                        // Login failed (it returned null)
+                        System.out.println("Please try again or register a new account.");
+                    }
+                    break;
+                default:
+                    break;
+            }
+            } while(choice != 3);
     }
 
-        public void adminDashboard(User user, AdminService adminService){
+        public void adminDashboard(User user){
         boolean running = true;
 
         do{
-            adminService.checkInventory();
+            adminService.checkInventory(user);
 
             Menu.AdminOptions();
             int choice = InputUtil.readInt("> ", scan);
@@ -153,7 +157,7 @@ public class ConsoleUI {
                                     product = new NonPerishableProducts(id, name, price, quantity, warrantyInMonths);
                                     break;
                             }
-                            adminService.addProduct(product);
+                            adminService.addProduct(user, product);
                             
 
                             correctType = false;
@@ -166,12 +170,12 @@ public class ConsoleUI {
                 case 2: // Update Stock
                     String productId = InputUtil.readString("Enter Product ID: ", scan);
                     int amount = InputUtil.readInt("Enter amount (positive (increase) / negative (derease)): ", scan);
-                    adminService.updateStock(productId, amount);
+                    adminService.updateStock(user, productId, amount);
                 break;
 
                 case 3: // remove product
                      String productIdToRemove = InputUtil.readString("Enter Product ID: ", scan);
-                     adminService.removeProduct(productIdToRemove);
+                     adminService.removeProduct(user, productIdToRemove);
                 break;
 
                 case 4: // view all orders
@@ -182,7 +186,7 @@ public class ConsoleUI {
                 break;
 
                 case 6: // View Inventory History
-                    adminService.viewInventoryHistory();
+                    adminService.viewInventoryHistory(user);
                 break;
 
                 case 0: // loggin out

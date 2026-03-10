@@ -4,15 +4,16 @@ import application.inventory.InventoryService;
 import application.user.AdminService;
 import application.user.UserService;
 import cli.ConsoleUI;
-import infrastructure.history.InventoryHistory;
 
 public class App {
     public static void main(String[] args) throws Exception {
         System.out.println("==== Welcome to SmartStock System ====");
         Scanner scan = new Scanner(System.in);
-       
+
+        InventoryService inventoryService = new InventoryService();
+        AdminService adminService = new AdminService(inventoryService);
         UserService userService = new UserService();
-        ConsoleUI consoleUI = new ConsoleUI(userService, scan);
+        ConsoleUI consoleUI = new ConsoleUI(userService, adminService, scan);
 
         consoleUI.start();
     }
