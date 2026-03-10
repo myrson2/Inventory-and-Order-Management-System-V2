@@ -41,45 +41,73 @@ public class ConsoleUI {
     }
 
     public void handleUserInput(){
-        boolean running = true;
-        try {
-            System.out.println("\n=== User Auth ===");
-            String id = IdGenerator.userIDenerateID();
-            String email = InputUtil.readString("Enter Email: ", scan);
-            String password = InputUtil.readString("Enter Password: ", scan);
-            boolean isLogin = userService.login(email, password);
+        System.out.println("1 - Register");
+        System.out.println("2 - Log in");
+        int ch = InputUtil.readInt("> ", scan);
 
-            if (isLogin) {
-                do {
-                    System.out.println("\nSelect User Type: | Admin || Customer || Exit |");
-                    String userType = InputUtil.readString("> ", scan).trim().toLowerCase();
+        switch (ch) {
+            case 1: // User Registration
+                    try {
+                         boolean isRegistered = false;
+                               do{
+                                    System.out.println("\n=== User Auth ===");
+                                    String id = IdGenerator.userIDenerateID();
+                                    String email = InputUtil.readString("Enter Email: ", scan);
+                                    String password = InputUtil.readString("Enter Password: ", scan);
+                                    String userName = name(scan);
 
-                    switch (userType) {
-                        case "admin":
-                            String admin = name(scan);
-                            user = new Admin(id, admin, email, password);
-                            userService.addUser(user);
-                            adminDashboard(user);
+                                            System.out.println("\nSelect User Type: | Admin || Customer || Exit |");
+                                            String userType = InputUtil.readString("> ", scan).trim().toLowerCase();
 
-                            break;
-                        case "customer":
-                            String customer = name(scan);
-                            user = new Customer(id, customer, email, password);
-                            userService.addUser(user);
-                            customerDashboard();
-                            break;
-                        case "exit":
-                            running = false;
-                            break;
-                        default:
-                            System.out.println("Choose Among the User types.");
-                            break;
+                               
+                                     switch (userType) {
+                                        case "admin":
+                                            user = new Admin(id, userName, email, password);
+                                            break;
+                                        case "customer":
+                                            user = new Customer(id, userName, email, password);
+                                            break;
+                                        default:
+                                            System.out.println("Choose Among the User types.");
+                                            break;
+                                    }
+
+                                    isRegistered = userService.registerUser(user);
+                               } while(!isRegistered);
+
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
                     }
-                } while (running);
-            } 
+                break;
+            
+            case 2: 
+                System.out.println("\n=== User Login ===");
+                String email = InputUtil.readString("Enter Email: ", scan);
+                String password = InputUtil.readString("Enter Password: ", scan);
 
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+                // STEP 1: Call login and capture the returned User object
+                User loggedInUser = userService.login(email, password);
+
+                // STEP 2: Check if login was successful (not null)
+                if (loggedInUser != null) {
+                    
+                    // STEP 3: Route the user based on their specific class (Polymorphism)
+                    if (loggedInUser instanceof Admin) {
+                        System.out.println("Routing to Admin Dashboard...");
+                        adminDashboard(loggedInUser); // Pass the user to the admin dashboard
+                        
+                    } else if (loggedInUser instanceof Customer) {
+                        System.out.println("Routing to Customer Dashboard...");
+                        customerDashboard(loggedInUser); // Pass the user to the customer dashboard
+                    }
+
+                } else {
+                    // Login failed (it returned null)
+                    System.out.println("Please try again or register a new account.");
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -151,20 +179,21 @@ public class ConsoleUI {
                     adminService.viewInventoryHistory();
                 break;
 
-                case 0: // BREAK
-                    System.out.println("Exiting Admin Dashboard.....");
+                case 0: // loggin out
+                    userService.logout();
                     System.out.println("(Enter again to exit)");
                     scan.nextLine();
                     running = false;
                 break;
-                default:
+
+                default:    
                 break;
             }
 
         }while(running);
     }
 
-    public void customerDashboard(){
+    public void customerDashboard(User user){
         boolean running = true;
 
         do{

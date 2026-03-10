@@ -1,7 +1,6 @@
 package application.inventory;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import domain.inventory.Inventory;
 import domain.product.Product;
@@ -9,11 +8,10 @@ import infrastructure.history.InventoryHistory;
 import util.DateUtils;
 
 public class InventoryService {
-   private Inventory inventory;
+   private Inventory inventory = new Inventory();
    private InventoryHistory inventoryHistory;
 
-   public InventoryService(Inventory inventory, InventoryHistory inventoryHistory) {
-      this.inventory = inventory;
+   public InventoryService(InventoryHistory inventoryHistory) {
       this.inventoryHistory = inventoryHistory;
    } 
 
