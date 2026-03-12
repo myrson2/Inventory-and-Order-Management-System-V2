@@ -2,8 +2,10 @@ package application.user;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import domain.user.Admin;
 import domain.user.User;
+import infrastructure.log.LoggerService;
 
 public class UserService {
     
@@ -12,24 +14,18 @@ public class UserService {
     
     // Tracks the currently logged-in user session
     private User currentUser;
-    public User login(String email, String password) {
-        if (email == null || !email.contains("@")) {
-            throw new IllegalArgumentException("Invalid email format.");
-        }
-        if (password == null || password.length() < 6) {
-            throw new IllegalArgumentException("Password must be at least 6 characters.");
-        }
-
+    
+    public User login(String email, String password, LoggerService loggerService) {
         // Search for a matching user in our "database"
         for (User u : users) {
             if (u.getEmail().equalsIgnoreCase(email) && u.getPassword().equals(password)) {
-                this.currentUser = u; // Set active session
-                System.out.println("Login successful! Welcome back, " + u.getName());
+                this.currentUser = u; // Set active session   
+                loggerService.logInfo(u.getEmail(), "[INFO]: USER SUCCESSFULLY LOGIN");
                 return u;
             }
         }
         
-        System.out.println("Login failed: Incorrect email or password.");
+        loggerService.logWarning("[WARNING]: LOGIN FAILED: INCORRECT EMAIL OR PASSWORD");
         return null;
     }
 
@@ -42,20 +38,14 @@ public class UserService {
         }
     }
 
-    public boolean registerUser(User newUser) {
-         if (newUser.getEmail() == null || !newUser.getEmail().contains("@")) {
-            throw new IllegalArgumentException("Invalid email format.");
-        }
-        if (newUser.getPassword() == null || newUser.getPassword().length() < 6) {
-            throw new IllegalArgumentException("Password must be at least 6 characters.");
-        }
+    public boolean registerUser(User newUser, LoggerService loggerService) {
         if (emailExists(newUser.getEmail())) {
             System.out.println("Registration failed: A user with this email already exists.");
+            loggerService.logWarning("[WARNING]: EMAIL IS ALREADY EXIST.");
             return false;
         }
         
         users.add(newUser);
-        System.out.println("Registration successful for: " + newUser.getEmail());
         return true;
     }
 

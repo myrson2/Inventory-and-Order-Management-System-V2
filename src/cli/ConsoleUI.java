@@ -3,7 +3,6 @@ package cli;
 import java.time.LocalDate;
 import java.util.Scanner;
 
-import application.inventory.InventoryService;
 import application.user.AdminService;
 import application.user.UserService;
 import domain.product.NonPerishableProducts;
@@ -12,22 +11,24 @@ import domain.product.Product;
 import domain.user.Admin;
 import domain.user.Customer;
 import domain.user.User;
-import infrastructure.history.InventoryHistory;
+import infrastructure.log.LoggerService;
 import util.DateUtils;
 import util.IdGenerator;
 import util.InputUtil;
 
 public class ConsoleUI {    
+    private LoggerService loggerService;
     private Scanner scan;
     private User user;
     private AdminService adminService;
     private UserService userService;
     private Product product;
 
-    public ConsoleUI(UserService userService, AdminService adminService, Scanner scan){
+    public ConsoleUI(UserService userService, AdminService adminService, LoggerService loggerService, Scanner scan){
         this.userService = userService;
         this.scan = scan;
         this.adminService = adminService;
+        this.loggerService = loggerService;
     }
 
     public void start(){
@@ -46,8 +47,8 @@ public class ConsoleUI {
 
     public void handleUserInput(){
         int choice;
-        
         do{
+            System.out.println("=======================");
             System.out.println("1 - Register");
             System.out.println("2 - Log in");
             System.out.println("3 - Exit");
@@ -57,33 +58,46 @@ public class ConsoleUI {
                 case 1: // User Registration
                         try {
                             boolean isRegistered = false;
-                                do{
-                                        System.out.println("\n=== User Auth ===");
-                                        String id = IdGenerator.userIDenerateID();
-                                        String email = InputUtil.readString("Enter Email: ", scan);
-                                        String password = InputUtil.readString("Enter Password: ", scan);
-                                        String userName = name(scan);
+                            do{
+                                System.out.println("\n=== User Auth ===");
+                                String id = IdGenerator.userIDenerateID();
+                                String email = InputUtil.readString("Enter Email: ", scan);
 
-                                                System.out.println("\nSelect User Type: | Admin || Customer || Exit |");
-                                                String userType = InputUtil.readString("> ", scan).trim().toLowerCase();
+                                if (!email.contains("@")) {
+                                    loggerService.logWarning("[WARNING]: INVALID EMAIL");
+                                    throw new IllegalArgumentException("Invalid email format.");
+                                }
 
-                                
-                                        switch (userType) {
-                                            case "admin":
-                                                user = new Admin(id, userName, email, password);
-                                                break;
-                                            case "customer":
-                                                user = new Customer(id, userName, email, password);
-                                                break;
-                                            default:
-                                                System.out.println("Choose Among the User types.");
-                                                break;
-                                        }
+                                String password = InputUtil.readString("Enter Password: ", scan);
 
-                                        isRegistered = userService.registerUser(user);
-                                } while(!isRegistered);
+                                if (password.length() < 6) {
+                                    loggerService.logWarning("[WARNING]: INVALID PASSWORD");
+                                    throw new IllegalArgumentException("Password must be at least 6 characters.");
+                                }
+
+                                String userName = name(scan);
+
+                                System.out.println("\nSelect User Type: | Admin || Customer || Exit |");
+                                String userType = InputUtil.readString("> ", scan).trim().toLowerCase();
+
+                                switch (userType) {
+                                    case "admin":
+                                        user = new Admin(id, userName, email, password);
+                                        break;
+                                    case "customer":
+                                        user = new Customer(id, userName, email, password);
+                                        break;
+                                    default:
+                                        System.out.println("Choose Among the User types.");
+                                        break;
+                                }
+
+                                isRegistered = userService.registerUser(user, loggerService);
+                                loggerService.logInfo("[INFO]: USER SUCCESSFULLY REGISTERED");
+                            } while(!isRegistered);
 
                         } catch (IllegalArgumentException e) {
+                            loggerService.logError("[SEVERE]: USER FAILED TO REGISTER.");
                             System.out.println(e.getMessage());
                         }
                     break;
@@ -91,10 +105,21 @@ public class ConsoleUI {
                 case 2: 
                     System.out.println("\n=== User Login ===");
                     String email = InputUtil.readString("Enter Email: ", scan);
+
+                    if (!email.contains("@")) {
+                        loggerService.logWarning("[WARNING]: INVALID EMAIL");
+                        throw new IllegalArgumentException("Invalid email format.");
+                    }
+
                     String password = InputUtil.readString("Enter Password: ", scan);
 
+                    if (password.length() < 6) {
+                        loggerService.logWarning("[WARNING]: INVALID PASSWORD");
+                        throw new IllegalArgumentException("Password must be at least 6 characters.");
+                    }
+
                     // STEP 1: Call login and capture the returned User object
-                    User loggedInUser = userService.login(email, password);
+                    User loggedInUser = userService.login(email, password, loggerService);
 
                     // STEP 2: Check if login was successful (not null)
                     if (loggedInUser != null) {
@@ -110,12 +135,17 @@ public class ConsoleUI {
                             customerDashboard(loggedInUser); // Pass the user to the customer dashboard
                         }
 
+                        System.out.println("Login successful! Welcome, " + loggedInUser.getName());
                     } else {
                         // Login failed (it returned null)
                         System.out.println("Please try again or register a new account.");
                     }
                     break;
+                case 3:
+                    System.out.println("Exitingg....");
+                break;
                 default:
+                    System.out.println("Error: 1 - 3 Only");
                     break;
             }
             } while(choice != 3);
@@ -123,8 +153,8 @@ public class ConsoleUI {
 
         public void adminDashboard(User user){
         boolean running = true;
-
         do{
+            System.out.println("====== Welcome To Admin Dashboard =======");
             adminService.checkInventory(user);
 
             Menu.AdminOptions();
@@ -133,38 +163,50 @@ public class ConsoleUI {
             switch (choice) {
                 case 1: // Add product
                 boolean correctType = true;
-                    while (correctType) {
-                         System.out.println("""
-                                Product Type:
-                                1. Perishable 
-                                2. Non-Perishable 
-                                """);
-                        int type = InputUtil.readInt("> ", scan);
-                        if(type == 1 || type == 2){
-                            
-                            String id = IdGenerator.productIDGenerator();
-                            String name = InputUtil.readString("Product Name: ", scan);
-                            double price = InputUtil.readDouble("Price: ", scan);
-                            int quantity = InputUtil.readInt("Quantity: ", scan);
-                            
-                            switch(type){
-                                case 1: // Perishable
-                                    LocalDate expirationDate = DateUtils.readLocalDate("Enter Expiration Date: ", scan);
-                                    product = new PerishableProducts(id, name, price, quantity, expirationDate);
-                                    break;
-                                case 2: // Non-Perishable
-                                    int warrantyInMonths = InputUtil.readInt("Enter Warranty (Months): ", scan);
-                                    product = new NonPerishableProducts(id, name, price, quantity, warrantyInMonths);
-                                    break;
-                            }
-                            adminService.addProduct(user, product);
-                            
+                while (correctType) {
+                    System.out.println("""
+                        Product Type:
+                        1. Perishable 
+                        2. Non-Perishable 
+                        """);
 
-                            correctType = false;
-                        } else {
-                            System.out.println("Choose Among the Product types.");
+                    int type = InputUtil.readInt("> ", scan);
+                
+                    try {
+                        String id = IdGenerator.productIDGenerator();
+                        String name = InputUtil.readString("Product Name:   ", scan);
+                        double price = InputUtil.readDouble("Price: ", scan);
+
+                        if(price < 0){
+                            throw new IllegalArgumentException("Price cannot be negative.");
                         }
+
+                        int quantity = InputUtil.readInt("Quantity: ", scan);
+
+                        if(quantity < 0){
+                            throw new IllegalArgumentException("Quantity cannot be negative.");
+                        }
+                        
+                        switch(type){
+                            case 1: // Perishable
+                                LocalDate expirationDate = DateUtils.readLocalDate("Enter Expiration Date: ", scan);
+                                product = new PerishableProducts(id, name, price, quantity, expirationDate);
+                                break;
+                            case 2: // Non-Perishable
+                                int warrantyInMonths = InputUtil.readInt("Enter Warranty (Months): ", scan);
+                                product = new NonPerishableProducts(id, name, price, quantity, warrantyInMonths);
+                                break;
+                            default:
+                                System.out.println("Choose Among the Product types.");
+
+                        }
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
                     }
+
+                    adminService.addProduct(user, product);
+                    correctType = false;
+                }
                 break;
 
                 case 2: // Update Stock
@@ -183,6 +225,7 @@ public class ConsoleUI {
                 break;
 
                 case 5: // view logs 
+
                 break;
 
                 case 6: // View Inventory History
@@ -197,6 +240,7 @@ public class ConsoleUI {
                 break;
 
                 default:    
+                    System.out.println("0 - 6 Only");
                 break;
             }
 

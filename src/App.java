@@ -1,9 +1,11 @@
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 import application.inventory.InventoryService;
 import application.user.AdminService;
 import application.user.UserService;
 import cli.ConsoleUI;
+import infrastructure.log.LoggerService;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -13,7 +15,8 @@ public class App {
         InventoryService inventoryService = new InventoryService();
         AdminService adminService = new AdminService(inventoryService);
         UserService userService = new UserService();
-        ConsoleUI consoleUI = new ConsoleUI(userService, adminService, scan);
+        LoggerService loggerService = new LoggerService();
+        ConsoleUI consoleUI = new ConsoleUI(userService, adminService, loggerService,  scan);
 
         consoleUI.start();
     }
