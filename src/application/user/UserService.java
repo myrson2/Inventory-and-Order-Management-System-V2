@@ -73,4 +73,13 @@ public class UserService {
             }
         }
     }
+
+    public Admin getAdmin(String name){
+        for (User u : users) {
+            if (u instanceof Admin && u.getName().equalsIgnoreCase(name)) {
+                return (Admin) u;
+            }
+        }
+        return null;
+    }
 }

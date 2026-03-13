@@ -1,5 +1,9 @@
 package domain.order;
 
-public class OrderStatus {
-    
+public enum OrderStatus {
+    PENDING,
+    CONFIRMED,
+    SHIPPED,
+    DELIVERED,
+    CANCELLED
 }

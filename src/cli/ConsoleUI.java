@@ -147,7 +147,7 @@ public class ConsoleUI {
             } while(choice != 3);
     }
 
-        public void adminDashboard(User user){
+    public void adminDashboard(User user){
         boolean running = true;
         do{
             System.out.println("====== Welcome To Admin Dashboard =======");
@@ -247,8 +247,29 @@ public class ConsoleUI {
         boolean running = true;
 
         do{
-            userService.displayAdmin();
-            Menu.CustomerOptions();
+            do {
+                userService.displayAdmin();
+                String adminName = InputUtil.readString("> ", scan);
+
+                Admin admin = userService.getAdmin(adminName); // accessing which store is chosen by the customer
+
+                do {
+                    Menu.CustomerOptions();
+                    int choice = InputUtil.readInt("Enter choice: ", scan);
+
+                    switch (choice) {
+                        case 1:
+                            
+                            break;
+                    
+                        default:
+                            break;
+                    }
+                } while (running);
+
+                
+            } while (running);
+            
         }while(running);
     }
 
