@@ -7,15 +7,18 @@ import java.util.Map;
 import domain.inventory.Inventory;
 import domain.product.Product;
 import infrastructure.history.InventoryHistory;
+import infrastructure.log.LoggerService;
 import util.DateUtils;
 
 public class InventoryService {
+    private LoggerService loggerService;
     
     // 1. HashMaps to act as your "database" for each admin
     private Map<String, Inventory> adminInventories = new HashMap<>();
     private Map<String, InventoryHistory> adminHistories = new HashMap<>();
 
-    public InventoryService() {
+    public InventoryService(LoggerService loggerService) {
+        this.loggerService = loggerService;
         // We no longer need to pass InventoryHistory in the constructor 
         // because we create them automatically in the helper method below.
     } 
@@ -36,6 +39,7 @@ public class InventoryService {
     public void addProduct(String adminEmail, Product product){
         getInventory(adminEmail).addProduct(product);
         getHistory(adminEmail).recordAddProduct(product, DateUtils.timeStamp());
+        loggerService.logInfo(adminEmail, String.format("[INFO]: %s is added", product.getName()).toUpperCase());
     }
 
     public void updateStock(String adminEmail, String id, int quantity){
@@ -45,6 +49,7 @@ public class InventoryService {
 
         if(product == null) {
             System.out.println("Not found.");
+            loggerService.logWarning(adminEmail, String.format("[INFO]: Product Not Found."));
             return;
         }
 
@@ -56,8 +61,11 @@ public class InventoryService {
             history.recordStockDecrease(id, quantity, DateUtils.timeStamp());
         } else {
             System.out.println("Amount should not be equal to zero.");
+            loggerService.logWarning(adminEmail, String.format("[WARNING]: Amount should not be equal to zero."));
             return;
         }
+
+        loggerService.logInfo(adminEmail, String.format("[INFO]: Product Successfully Updated."));
     }
 
     public void removeProduct(String adminEmail, String id){
@@ -70,7 +78,10 @@ public class InventoryService {
             history.recordProductRemoval(id, DateUtils.timeStamp());
         } else {
             System.out.println("Product not found.");
+            loggerService.logInfo(adminEmail, String.format("[WARNING]: Product NOT found."));
         }
+
+        loggerService.logInfo(adminEmail, String.format("[INFO]: Product Successfully Removed."));
     }
 
     public void viewInventoryHistory(String adminEmail){

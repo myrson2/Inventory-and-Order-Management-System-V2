@@ -12,10 +12,11 @@ public class App {
         System.out.println("==== Welcome to SmartStock System ====");
         Scanner scan = new Scanner(System.in);
 
-        InventoryService inventoryService = new InventoryService();
-        AdminService adminService = new AdminService(inventoryService);
+        
         UserService userService = new UserService();
         LoggerService loggerService = new LoggerService();
+        InventoryService inventoryService = new InventoryService(loggerService);
+        AdminService adminService = new AdminService(inventoryService);
         ConsoleUI consoleUI = new ConsoleUI(userService, adminService, loggerService,  scan);
 
         consoleUI.start();

@@ -64,14 +64,12 @@ public class ConsoleUI {
                                 String email = InputUtil.readString("Enter Email: ", scan);
 
                                 if (!email.contains("@")) {
-                                    loggerService.logWarning("[WARNING]: INVALID EMAIL");
                                     throw new IllegalArgumentException("Invalid email format.");
                                 }
 
                                 String password = InputUtil.readString("Enter Password: ", scan);
 
                                 if (password.length() < 6) {
-                                    loggerService.logWarning("[WARNING]: INVALID PASSWORD");
                                     throw new IllegalArgumentException("Password must be at least 6 characters.");
                                 }
 
@@ -93,11 +91,10 @@ public class ConsoleUI {
                                 }
 
                                 isRegistered = userService.registerUser(user, loggerService);
-                                loggerService.logInfo("[INFO]: USER SUCCESSFULLY REGISTERED");
+                               
                             } while(!isRegistered);
 
                         } catch (IllegalArgumentException e) {
-                            loggerService.logError("[SEVERE]: USER FAILED TO REGISTER.");
                             System.out.println(e.getMessage());
                         }
                     break;
@@ -107,14 +104,12 @@ public class ConsoleUI {
                     String email = InputUtil.readString("Enter Email: ", scan);
 
                     if (!email.contains("@")) {
-                        loggerService.logWarning("[WARNING]: INVALID EMAIL");
                         throw new IllegalArgumentException("Invalid email format.");
                     }
 
                     String password = InputUtil.readString("Enter Password: ", scan);
 
                     if (password.length() < 6) {
-                        loggerService.logWarning("[WARNING]: INVALID PASSWORD");
                         throw new IllegalArgumentException("Password must be at least 6 characters.");
                     }
 
@@ -138,6 +133,7 @@ public class ConsoleUI {
                         System.out.println("Login successful! Welcome, " + loggedInUser.getName());
                     } else {
                         // Login failed (it returned null)
+                        loggerService.logWarning(loggedInUser.getEmail() ,"[WARNING]: LOGIN FAILED: INCORRECT EMAIL OR PASSWORD");
                         System.out.println("Please try again or register a new account.");
                     }
                     break;
@@ -225,7 +221,7 @@ public class ConsoleUI {
                 break;
 
                 case 5: // view logs 
-
+                    loggerService.displayLogs(user.getEmail());
                 break;
 
                 case 6: // View Inventory History

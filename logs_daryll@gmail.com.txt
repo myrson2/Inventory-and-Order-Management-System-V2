@@ -1,0 +1,6 @@
+Mar 13, 2026 11:31:56 PM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY REGISTERED
+Mar 13, 2026 11:32:15 PM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY LOGIN
+Mar 13, 2026 11:32:22 PM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: TAE IS ADDED

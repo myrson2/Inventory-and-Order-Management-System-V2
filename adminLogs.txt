@@ -1,2 +1,0 @@
-Mar 12, 2026 9:21:46 PM infrastructure.log.LoggerService logInfo
-INFO: User Successfully Registered

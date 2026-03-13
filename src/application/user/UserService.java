@@ -24,8 +24,6 @@ public class UserService {
                 return u;
             }
         }
-        
-        loggerService.logWarning("[WARNING]: LOGIN FAILED: INCORRECT EMAIL OR PASSWORD");
         return null;
     }
 
@@ -41,11 +39,12 @@ public class UserService {
     public boolean registerUser(User newUser, LoggerService loggerService) {
         if (emailExists(newUser.getEmail())) {
             System.out.println("Registration failed: A user with this email already exists.");
-            loggerService.logWarning("[WARNING]: EMAIL IS ALREADY EXIST.");
+            loggerService.logWarning(newUser.getEmail(), "[WARNING]: EMAIL IS ALREADY EXIST.");
             return false;
         }
         
         users.add(newUser);
+        loggerService.logInfo(newUser.getEmail(), "[INFO]: USER SUCCESSFULLY REGISTERED");
         return true;
     }
 

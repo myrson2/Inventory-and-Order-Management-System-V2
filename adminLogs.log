@@ -1,4 +1,0 @@
-Mar 12, 2026 9:27:57 PM infrastructure.log.LoggerService logInfo
-INFO: User Successfully Registered
-Mar 12, 2026 9:28:29 PM infrastructure.log.LoggerService logError
-SEVERE: User Failed to Register
