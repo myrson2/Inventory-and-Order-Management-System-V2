@@ -28,7 +28,6 @@ public class InventoryService {
         adminInventories.putIfAbsent(adminEmail, new Inventory());
         return adminInventories.get(adminEmail);
     }
-
     // 3. Helper Method: Gets the admin's history, or creates a new one if it doesn't exist yet
     private InventoryHistory getHistory(String adminEmail) {
         adminHistories.putIfAbsent(adminEmail, new InventoryHistory());

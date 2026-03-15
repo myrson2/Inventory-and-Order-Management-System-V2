@@ -32,7 +32,8 @@ public class PerishableProducts extends Product{
     }
 
     @Override
-    public void getProductDetails() {
-       System.out.printf("ID: %s || Name: %s || Price: %.2f || quantity: %d || Expiration Date: %s", super.getId(), super.getName(), super.getPrice(), super.getQuantity(), expirationDate);
+    public String getProductDetails() {
+        String details = String.format("ID: %s || Name: %s || Price: %.2f || quantity: %d || Expiration Date: %s", super.getId(), super.getName(), super.getPrice(), super.getQuantity(), expirationDate);
+       return details;
     }
 }

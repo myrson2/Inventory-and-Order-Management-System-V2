@@ -70,5 +70,5 @@ public abstract class Product {
 
     public abstract int increaseStock(int amount);
     public abstract int decreaseStock(int amount);
-    public abstract void getProductDetails();
+    public abstract String getProductDetails();
 }

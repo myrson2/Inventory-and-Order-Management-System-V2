@@ -3,12 +3,15 @@ package application.user;
 import application.inventory.InventoryService;
 import domain.product.Product;
 import domain.user.User;
+import infrastructure.file.FileManager;
 
 public class AdminService {
     private InventoryService inventoryService;
+    private FileManager fileManager;
 
-    public AdminService(InventoryService inventoryService){
+    public AdminService(InventoryService inventoryService, FileManager fileManager){
         this.inventoryService = inventoryService;
+        this.fileManager = fileManager;
     }
 
     public void addProduct(User user, Product product){
@@ -25,6 +28,10 @@ public class AdminService {
 
     public void viewInventoryHistory(User user){
         inventoryService.viewInventoryHistory(user.getEmail());
+    }
+
+    public void saveProducts(User user){
+        fileManager.saveProducts(user.getName(), inventoryService.);
     }
 
     public void checkInventory(User user){

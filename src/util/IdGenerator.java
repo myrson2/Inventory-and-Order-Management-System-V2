@@ -36,7 +36,8 @@ public class IdGenerator {
             throw new IllegalStateException("Maximum ID limit reached.");
         }
 
-        while (userUsedIds.contains(currentId)) {
+        // Ensure product IDs are unique across all products.
+        while (productUsedIds.contains(currentId)) {
             currentId++;
         }
 
@@ -44,7 +45,6 @@ public class IdGenerator {
         productUsedIds.add(id);
 
         String productId = String.valueOf(id);
-        currentId++;
 
         return productId;
     }

@@ -30,7 +30,7 @@ public class NonPerishableProducts extends Product{
     }
 
     @Override
-    public void getProductDetails() {
-        System.out.printf("ID: %s || Name: %s || Price: %.2f || quantity: %d || Warranty (Months): %d\n", super.getId(), super.getName(), super.getPrice(), super.getQuantity(), warrantyMonths);
+    public String getProductDetails() {
+        return String.format("ID: %s || Name: %s || Price: %.2f || quantity: %d || Warranty (Months): %d\n", super.getId(), super.getName(), super.getPrice(), super.getQuantity(), warrantyMonths);
     }
 }

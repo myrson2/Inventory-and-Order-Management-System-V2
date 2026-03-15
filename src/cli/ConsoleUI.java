@@ -17,6 +17,7 @@ import util.IdGenerator;
 import util.InputUtil;
 
 public class ConsoleUI {    
+    private IdGenerator idGenerator;
     private LoggerService loggerService;
     private Scanner scan;
     private User user;
@@ -24,11 +25,12 @@ public class ConsoleUI {
     private UserService userService;
     private Product product;
 
-    public ConsoleUI(UserService userService, AdminService adminService, LoggerService loggerService, Scanner scan){
+    public ConsoleUI(UserService userService, AdminService adminService, LoggerService loggerService, IdGenerator idGenerator, Scanner scan){
         this.userService = userService;
         this.scan = scan;
         this.adminService = adminService;
         this.loggerService = loggerService;
+        this.idGenerator = idGenerator;
     }
 
     public void start(){
@@ -60,7 +62,7 @@ public class ConsoleUI {
                             boolean isRegistered = false;
                             do{
                                 System.out.println("\n=== User Auth ===");
-                                String id = IdGenerator.userIDenerateID();
+                                String id = IdGenerator.productIDGenerator();
                                 String email = InputUtil.readString("Enter Email: ", scan);
 
                                 if (!email.contains("@")) {
@@ -81,16 +83,19 @@ public class ConsoleUI {
                                 switch (userType) {
                                     case "admin":
                                         user = new Admin(id, userName, email, password);
+                                        isRegistered = userService.registerUser(user, loggerService);
                                         break;
                                     case "customer":
                                         user = new Customer(id, userName, email, password);
+                                        isRegistered = userService.registerUser(user, loggerService);
+                                        break;
+                                    case "exit":
+                                        isRegistered = true;
                                         break;
                                     default:
                                         System.out.println("Choose Among the User types.");
                                         break;
                                 }
-
-                                isRegistered = userService.registerUser(user, loggerService);
                                
                             } while(!isRegistered);
 
@@ -194,7 +199,7 @@ public class ConsoleUI {
                                 break;
                             default:
                                 System.out.println("Choose Among the Product types.");
-
+                                break;
                         }
                     } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
@@ -228,6 +233,13 @@ public class ConsoleUI {
                     adminService.viewInventoryHistory(user);
                 break;
 
+                case 7: // save to file
+                    
+                break;
+
+                case 8: // load to file
+
+                break;
                 case 0: // loggin out
                     userService.logout();
                     System.out.println("(Enter again to exit)");
@@ -254,6 +266,8 @@ public class ConsoleUI {
                 Admin admin = userService.getAdmin(adminName); // accessing which store is chosen by the customer
 
                 do {
+                    adminService.checkInventory(admin);
+
                     Menu.CustomerOptions();
                     int choice = InputUtil.readInt("Enter choice: ", scan);
 

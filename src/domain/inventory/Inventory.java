@@ -21,7 +21,7 @@ public class Inventory {
         for (Product product : products) {
             if(product instanceof NonPerishableProducts){
                 NonPerishableProducts nonPerishableProducts = (NonPerishableProducts) product;
-                nonPerishableProducts.getProductDetails();
+               System.out.println( nonPerishableProducts.getProductDetails());
             }
         }
 
@@ -29,7 +29,7 @@ public class Inventory {
         for (Product product : products) {
             if(product instanceof PerishableProducts){
                 PerishableProducts perishableProducts = (PerishableProducts) product;
-                perishableProducts.getProductDetails();
+                System.out.println(perishableProducts.getProductDetails());
             }
         }
         System.out.println();

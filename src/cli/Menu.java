@@ -17,6 +17,8 @@ public class Menu {
                 4. View All Orders
                 5. View Logs
                 6. View Inventory History
+                7. Save To File
+                8. Load To File
                 """);
     }
     public static void CustomerOptions(){
