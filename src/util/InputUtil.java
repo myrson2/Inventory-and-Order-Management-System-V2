@@ -66,5 +66,20 @@ public class InputUtil {
         }
     }
 
+    public static String readEmail(String prompt, Scanner scan) {
+        String email = InputUtil.readString(prompt, scan);
+        if (!email.contains("@") || !email.contains(".")) {
+            throw new IllegalArgumentException("Invalid email format.");
+        }
+        return email;
+    }
+
+    public static String readPassword(String prompt, Scanner scan) {
+        String password = InputUtil.readString(prompt, scan);
+        if (password.length() < 6) {
+            throw new IllegalArgumentException("Password must be at least 6 characters.");
+        }
+        return password;
+    }
     
 }

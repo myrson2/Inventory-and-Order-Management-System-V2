@@ -10,15 +10,15 @@ public class Menu {
 
     public static void AdminOptions(){
         System.out.println("""
-                0. Exit
-                1. Add Product
-                2. Update Stock
-                3. Remove Product
-                4. View All Orders
-                5. View Logs
-                6. View Inventory History
-                7. Save To File
-                8. Load To File
+            0. Exit
+            1. Add Product
+            2. Update Stock
+            3. Remove Product
+            4. View All Orders
+            5. View Logs
+            6. View Inventory History
+            7. Save To File
+            8. Load To File
                 """);
     }
     public static void CustomerOptions(){

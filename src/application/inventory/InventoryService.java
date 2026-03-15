@@ -2,6 +2,7 @@ package application.inventory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import domain.inventory.Inventory;
@@ -96,7 +97,7 @@ public class InventoryService {
         }
     }
 
-    public void checkInventory(String adminEmail){
-        getInventory(adminEmail).checkInventory();
+    public List<Product> checkInventory(String adminEmail){
+        return getInventory(adminEmail).getProducts();
     }
 }

@@ -1,8 +1,6 @@
-Mar 15, 2026 2:28:06 PM infrastructure.log.LoggerService logInfo
+Mar 15, 2026 5:06:07 PM infrastructure.log.LoggerService logInfo
 INFO: [INFO]: USER SUCCESSFULLY REGISTERED
-Mar 15, 2026 2:28:15 PM infrastructure.log.LoggerService logInfo
+Mar 15, 2026 5:09:37 PM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY REGISTERED
+Mar 15, 2026 5:09:44 PM infrastructure.log.LoggerService logInfo
 INFO: [INFO]: USER SUCCESSFULLY LOGIN
-Mar 15, 2026 2:28:29 PM infrastructure.log.LoggerService logInfo
-INFO: [INFO]: MILK IS ADDED
-Mar 15, 2026 2:28:45 PM infrastructure.log.LoggerService logInfo
-INFO: [INFO]: WHEEL IS ADDED

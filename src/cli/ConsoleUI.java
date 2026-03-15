@@ -33,22 +33,26 @@ public class ConsoleUI {
         this.idGenerator = idGenerator;
     }
 
+    // Execution Starts
     public void start(){
         boolean running = true;
         while(running){
             Menu.displayMainMenu();
+
             int choice = InputUtil.readMenu("Enter Choice: ", scan);
-            if(choice == 1){
-                handleUserInput();
-            } else {
-                running = false;
-                break;
+            
+            switch (choice) {
+                case 1 -> handleUserInput();
+                case 2 -> running = false;
+                default -> System.out.println("1 and 2 Only. Try again.");
             }
        }
     }
 
     public void handleUserInput(){
         int choice;
+
+        // User Authentication Flow
         do{
             System.out.println("=======================");
             System.out.println("1 - Register");
@@ -58,89 +62,83 @@ public class ConsoleUI {
 
             switch (choice) {
                 case 1: // User Registration
-                        try {
-                            boolean isRegistered = false;
-                            do{
-                                System.out.println("\n=== User Auth ===");
-                                String id = IdGenerator.productIDGenerator();
-                                String email = InputUtil.readString("Enter Email: ", scan);
-
-                                if (!email.contains("@")) {
-                                    throw new IllegalArgumentException("Invalid email format.");
-                                }
-
-                                String password = InputUtil.readString("Enter Password: ", scan);
-
-                                if (password.length() < 6) {
-                                    throw new IllegalArgumentException("Password must be at least 6 characters.");
-                                }
-
-                                String userName = name(scan);
-
-                                System.out.println("\nSelect User Type: | Admin || Customer || Exit |");
-                                String userType = InputUtil.readString("> ", scan).trim().toLowerCase();
-
-                                switch (userType) {
-                                    case "admin":
-                                        user = new Admin(id, userName, email, password);
-                                        isRegistered = userService.registerUser(user, loggerService);
-                                        break;
-                                    case "customer":
-                                        user = new Customer(id, userName, email, password);
-                                        isRegistered = userService.registerUser(user, loggerService);
-                                        break;
-                                    case "exit":
-                                        isRegistered = true;
-                                        break;
-                                    default:
-                                        System.out.println("Choose Among the User types.");
-                                        break;
-                                }
-                               
-                            } while(!isRegistered);
-
-                        } catch (IllegalArgumentException e) {
-                            System.out.println(e.getMessage());
+                try {
+                    boolean isRegistered = false;
+                    do{
+                        // Inputting Fields of a User
+                        System.out.println("\n=== User Authentication ===");
+                        
+                        String id = IdGenerator.productIDGenerator();
+                        String email = InputUtil.readEmail("Email: ", scan);
+                        String password = InputUtil.readPassword("Password: ", scan);
+                        String userName = InputUtil.readString("EWhat should we call to you? > ", scan);
+                        
+                        // Choosing User Type
+                        System.out.println("\nSelect User Type: | Admin || Customer || Exit |");
+                        String userType = InputUtil.readString("> ", scan).trim().toLowerCase();
+                        
+                        switch (userType) {
+                            case "admin":
+                                user = new Admin(id, userName, email, password);
+                                isRegistered = userService.registerUser(user, loggerService);
+                                break;
+                            case "customer":
+                                user = new Customer(id, userName, email, password);
+                                isRegistered = userService.registerUser(user, loggerService);
+                                break;
+                            case "exit":
+                                isRegistered = true;
+                                break;
+                            default:
+                                System.out.println("Choose Among the User types.");
+                                break;
                         }
-                    break;
+                        
+                    } while(!isRegistered);
+
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
+                break;
                 
                 case 2: 
                     System.out.println("\n=== User Login ===");
-                    String email = InputUtil.readString("Enter Email: ", scan);
 
-                    if (!email.contains("@")) {
-                        throw new IllegalArgumentException("Invalid email format.");
-                    }
+                    boolean isLogin = false;
+                    do {
+                        try{
+                            String email = InputUtil.readEmail("Email: ", scan);
+                            String password = InputUtil.readPassword("Password: ", scan);
 
-                    String password = InputUtil.readString("Enter Password: ", scan);
+                            // STEP 1: Call login and capture the returned User object
+                            User loggedInUser = userService.login(email, password, loggerService);
 
-                    if (password.length() < 6) {
-                        throw new IllegalArgumentException("Password must be at least 6 characters.");
-                    }
+                            // STEP 2: Check if login was successful (not null)
+                            if (loggedInUser != null) {
+                                
+                                // STEP 3: Route the user based on their specific class (Polymorphism)
+                                if (loggedInUser instanceof Admin) {
 
-                    // STEP 1: Call login and capture the returned User object
-                    User loggedInUser = userService.login(email, password, loggerService);
+                                    System.out.println("Routing to Admin Dashboard...");
+                                    adminDashboard(loggedInUser); // Pass the user to the admin dashboard
+                                    
+                                } else if (loggedInUser instanceof Customer) {
+                                    System.out.println("Routing to Customer Dashboard...");
+                                    customerDashboard(loggedInUser); // Pass the user to the customer dashboard
+                                }
 
-                    // STEP 2: Check if login was successful (not null)
-                    if (loggedInUser != null) {
-                        
-                        // STEP 3: Route the user based on their specific class (Polymorphism)
-                        if (loggedInUser instanceof Admin) {
+                                System.out.println("Login successful! Welcome, " + loggedInUser.getName());
 
-                            System.out.println("Routing to Admin Dashboard...");
-                            adminDashboard(loggedInUser); // Pass the user to the admin dashboard
-                            
-                        } else if (loggedInUser instanceof Customer) {
-                            System.out.println("Routing to Customer Dashboard...");
-                            customerDashboard(loggedInUser); // Pass the user to the customer dashboard
+                                isLogin = true;
+                            } else {
+                                // Login failed (it returned null)
+                                loggerService.logWarning(loggedInUser.getEmail() ,"[WARNING]: LOGIN FAILED: INCORRECT EMAIL OR PASSWORD");
+                                System.out.println("Please try again or register a new account.");
+                            }
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
                         }
-
-                        System.out.println("Login successful! Welcome, " + loggedInUser.getName());
-                    } else {
-                        // Login failed (it returned null)
-                        loggerService.logWarning(loggedInUser.getEmail() ,"[WARNING]: LOGIN FAILED: INCORRECT EMAIL OR PASSWORD");
-                        System.out.println("Please try again or register a new account.");
-                    }
+                    } while(!isLogin);
                     break;
                 case 3:
                     System.out.println("Exitingg....");
@@ -155,8 +153,10 @@ public class ConsoleUI {
     public void adminDashboard(User user){
         boolean running = true;
         do{
-            System.out.println("====== Welcome To Admin Dashboard =======");
-            adminService.checkInventory(user);
+            System.out.println("\n====== Welcome To Admin Dashboard =======\n");
+            System.out.println("Your Inventory: ");
+            adminService.getProducts(user);
+            System.out.println("\n=========================================\n");
 
             Menu.AdminOptions();
             int choice = InputUtil.readInt("> ", scan);
@@ -266,7 +266,7 @@ public class ConsoleUI {
                 Admin admin = userService.getAdmin(adminName); // accessing which store is chosen by the customer
 
                 do {
-                    adminService.checkInventory(admin);
+                    adminService.getProducts(admin);
 
                     Menu.CustomerOptions();
                     int choice = InputUtil.readInt("Enter choice: ", scan);
@@ -285,9 +285,5 @@ public class ConsoleUI {
             } while (running);
             
         }while(running);
-    }
-
-    static String name(Scanner scan){
-        return InputUtil.readString("EWhat should we call to you? > ", scan);
     }
 }   
