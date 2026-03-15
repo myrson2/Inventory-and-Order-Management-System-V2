@@ -8,14 +8,19 @@ import domain.user.User;
 import infrastructure.log.LoggerService;
 
 public class UserService {
-    
+    private LoggerService loggerService;
+
+    public UserService(LoggerService loggerService){
+        this.loggerService = loggerService;
+    }
+
     // Simulates our database of registered users
     private List<User> users = new ArrayList<>();
     
     // Tracks the currently logged-in user session
     private User currentUser;
     
-    public User login(String email, String password, LoggerService loggerService) {
+    public User login(String email, String password) {
         // Search for a matching user in our "database"
         for (User u : users) {
             if (u.getEmail().equalsIgnoreCase(email) && u.getPassword().equals(password)) {
@@ -24,6 +29,8 @@ public class UserService {
                 return u;
             }
         }
+
+        loggerService.logWarning(email ,"[WARNING]: LOGIN FAILED: INCORRECT EMAIL OR PASSWORD");
         return null;
     }
 
@@ -36,7 +43,7 @@ public class UserService {
         }
     }
 
-    public boolean registerUser(User newUser, LoggerService loggerService) {
+    public boolean registerUser(User newUser) {
         if (emailExists(newUser.getEmail())) {
             System.out.println("Registration failed: A user with this email already exists.");
             loggerService.logWarning(newUser.getEmail(), "[WARNING]: EMAIL IS ALREADY EXIST.");

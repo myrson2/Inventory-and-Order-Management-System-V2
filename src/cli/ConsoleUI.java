@@ -17,20 +17,16 @@ import util.IdGenerator;
 import util.InputUtil;
 
 public class ConsoleUI {    
-    private IdGenerator idGenerator;
-    private LoggerService loggerService;
     private Scanner scan;
     private User user;
     private AdminService adminService;
     private UserService userService;
     private Product product;
 
-    public ConsoleUI(UserService userService, AdminService adminService, LoggerService loggerService, IdGenerator idGenerator, Scanner scan){
+    public ConsoleUI(UserService userService, AdminService adminService, Scanner scan){
         this.userService = userService;
         this.scan = scan;
         this.adminService = adminService;
-        this.loggerService = loggerService;
-        this.idGenerator = idGenerator;
     }
 
     // Execution Starts
@@ -80,11 +76,11 @@ public class ConsoleUI {
                         switch (userType) {
                             case "admin":
                                 user = new Admin(id, userName, email, password);
-                                isRegistered = userService.registerUser(user, loggerService);
+                                isRegistered = userService.registerUser(user);
                                 break;
                             case "customer":
                                 user = new Customer(id, userName, email, password);
-                                isRegistered = userService.registerUser(user, loggerService);
+                                isRegistered = userService.registerUser(user);
                                 break;
                             case "exit":
                                 isRegistered = true;
@@ -101,7 +97,7 @@ public class ConsoleUI {
                 }
                 break;
                 
-                case 2: 
+                case 2: // User Login
                     System.out.println("\n=== User Login ===");
 
                     boolean isLogin = false;
@@ -111,7 +107,7 @@ public class ConsoleUI {
                             String password = InputUtil.readPassword("Password: ", scan);
 
                             // STEP 1: Call login and capture the returned User object
-                            User loggedInUser = userService.login(email, password, loggerService);
+                            User loggedInUser = userService.login(email, password);
 
                             // STEP 2: Check if login was successful (not null)
                             if (loggedInUser != null) {
@@ -132,7 +128,6 @@ public class ConsoleUI {
                                 isLogin = true;
                             } else {
                                 // Login failed (it returned null)
-                                loggerService.logWarning(loggedInUser.getEmail() ,"[WARNING]: LOGIN FAILED: INCORRECT EMAIL OR PASSWORD");
                                 System.out.println("Please try again or register a new account.");
                             }
                         } catch (IllegalArgumentException e) {
@@ -163,6 +158,7 @@ public class ConsoleUI {
 
             switch (choice) {
                 case 1: // Add product
+                
                 boolean correctType = true;
                 while (correctType) {
                     System.out.println("""
@@ -225,8 +221,8 @@ public class ConsoleUI {
                     System.out.println("// Still not implemented //");
                 break;
 
-                case 5: // view logs 
-                    loggerService.displayLogs(user.getEmail());
+                case 5: // view logs  
+                   adminService.viewLogs(user);
                 break;
 
                 case 6: // View Inventory History
