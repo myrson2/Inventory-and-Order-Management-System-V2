@@ -81,5 +81,9 @@ public class InputUtil {
         }
         return password;
     }
+
+    public static double returnTotal(int quantity, double price){
+        return quantity * price;
+    }
     
 }

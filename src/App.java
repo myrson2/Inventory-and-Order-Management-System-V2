@@ -19,6 +19,15 @@ public class App {
         AdminService adminService = new AdminService(inventoryService, loggerService, fileManager);
         ConsoleUI consoleUI = new ConsoleUI(userService, adminService, scan);
 
-        consoleUI.start();
+        System.out.println("Welcome to the Inventory and Order Management System V2");
+        
+        // Start the main application loop
+        try {
+            consoleUI.start();
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
+        } finally {
+            scan.close();
+        }
     }
 }

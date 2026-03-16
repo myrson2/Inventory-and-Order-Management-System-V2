@@ -86,7 +86,7 @@ public class AdminService {
         }
     }
 
-    public void getProducts(User user){
+    public void printProducts(User user){
         List<Product> getProducts = inventoryService.getListOfProducts(user.getEmail());
 
         if(getProducts.isEmpty()) return;
@@ -110,5 +110,17 @@ public class AdminService {
 
     public void viewLogs(User user){
         loggerService.displayLogs(user.getEmail());
+    }
+
+    public double getProducts(String productId, User user){ 
+        List<Product> adminProducts = inventoryService.getListOfProducts(user.getEmail()); 
+
+        for (Product product : adminProducts) {
+            if (productId.equalsIgnoreCase(product.getId())) {
+                return product.getPrice();
+            }
+        }
+
+        throw new IllegalArgumentException("Product with id " + productId + " not found");
     }
 }

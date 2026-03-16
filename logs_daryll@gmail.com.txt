@@ -1,14 +1,4 @@
-Mar 16, 2026 10:19:17 AM infrastructure.log.LoggerService logInfo
+Mar 16, 2026 3:46:44 PM infrastructure.log.LoggerService logInfo
 INFO: [INFO]: USER SUCCESSFULLY REGISTERED
-Mar 16, 2026 10:19:28 AM infrastructure.log.LoggerService logInfo
+Mar 16, 2026 3:46:56 PM infrastructure.log.LoggerService logInfo
 INFO: [INFO]: USER SUCCESSFULLY LOGIN
-Mar 16, 2026 10:19:47 AM infrastructure.log.LoggerService logInfo
-INFO: [INFO]: MILK IS ADDED.
-Mar 16, 2026 10:30:49 AM infrastructure.log.LoggerService logInfo
-INFO: [INFO]: USER SUCCESSFULLY REGISTERED
-Mar 16, 2026 10:31:02 AM infrastructure.log.LoggerService logInfo
-INFO: [INFO]: USER SUCCESSFULLY LOGIN
-Mar 16, 2026 10:31:17 AM infrastructure.log.LoggerService logInfo
-INFO: [INFO]: MILK IS ADDED.
-Mar 16, 2026 10:31:46 AM infrastructure.log.LoggerService logInfo
-INFO: [INFO]: PC IS ADDED.

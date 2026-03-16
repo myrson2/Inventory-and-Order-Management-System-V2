@@ -11,7 +11,6 @@ import domain.product.Product;
 import domain.user.Admin;
 import domain.user.Customer;
 import domain.user.User;
-import infrastructure.log.LoggerService;
 import util.DateUtils;
 import util.IdGenerator;
 import util.InputUtil;
@@ -150,7 +149,7 @@ public class ConsoleUI {
         do{
             System.out.println("\n====== Welcome To Admin Dashboard =======\n");
             System.out.println("Your Inventory: ");
-            adminService.getProducts(user);
+            adminService.printProducts(user);
             System.out.println("\n=========================================\n");
 
             Menu.AdminOptions();
@@ -262,14 +261,33 @@ public class ConsoleUI {
                 Admin admin = userService.getAdmin(adminName); // accessing which store is chosen by the customer
 
                 do {
-                    adminService.getProducts(admin);
-
                     Menu.CustomerOptions();
                     int choice = InputUtil.readInt("Enter choice: ", scan);
 
+                    Admin choosenAdmin = userService.getAdmin(adminName);
+
+                    if(choosenAdmin == null) {
+                        System.out.println("Not found");
+                        continue;
+                    }
+
                     switch (choice) {
                         case 1:
-                            
+                             adminService.printProducts(admin);
+                        break;
+
+                        case 2:
+                            System.out.println("Create a Order: ");
+                            String productID = InputUtil.readString("Product Id: ", scan);
+                            String productName = InputUtil.readString("Product Name: ", scan);
+                            int quantity = InputUtil.readInt("Quantity: ", scan);
+                            double total = InputUtil.returnTotal(quantity, adminService.getProducts(productID, user));
+
+                            System.out.println("----------------------------------------");
+                            System.out.printf ("  SUMMARY: %d x %s\n", quantity, productName);
+                            System.out.printf ("  TOTAL AMOUNT: $%.2f\n", total);
+                            System.out.println("========================================\n");
+
                             break;
                     
                         default:

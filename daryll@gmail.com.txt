@@ -1,2 +1,0 @@
-ID: 2 || Name: PC || Price: 25000.00 || quantity: 1 || Warranty (Months): 24
-ID: 1 || Name: milk || Price: 15.00 || quantity: 12 || Expiration Date: 2026-12-12
