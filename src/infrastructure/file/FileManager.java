@@ -14,7 +14,7 @@ import domain.product.Product;
 
 public class FileManager {
     private File createFile(String name){
-        File adminFile = new File("/src/infrastructure/file/" + name + ".txt"); // Create File object 
+        File adminFile = new File(name + ".txt"); // Create File object 
         try {
             if (adminFile.createNewFile()) {           // Try to create the file
                 System.out.println("File created: " + adminFile.getName());
@@ -32,7 +32,7 @@ public class FileManager {
     public void saveProducts(String name, List<Product> AdminProducts) throws IOException{
        File adminFile = createFile(name);
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(adminFile, true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(adminFile))) {
             for (Product product : AdminProducts) {
                 if(product instanceof NonPerishableProducts) writer.write(product.getProductDetails());
             }
