@@ -1,6 +1,18 @@
-Mar 15, 2026 5:06:07 PM infrastructure.log.LoggerService logInfo
+Mar 16, 2026 9:53:58 AM infrastructure.log.LoggerService logInfo
 INFO: [INFO]: USER SUCCESSFULLY REGISTERED
-Mar 15, 2026 5:09:37 PM infrastructure.log.LoggerService logInfo
-INFO: [INFO]: USER SUCCESSFULLY REGISTERED
-Mar 15, 2026 5:09:44 PM infrastructure.log.LoggerService logInfo
+Mar 16, 2026 9:54:05 AM infrastructure.log.LoggerService logInfo
 INFO: [INFO]: USER SUCCESSFULLY LOGIN
+Mar 16, 2026 9:54:26 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: MILK IS ADDED.
+Mar 16, 2026 9:54:40 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: WHEEL IS ADDED.
+Mar 16, 2026 10:16:20 AM infrastructure.log.LoggerService logWarning
+WARNING: [WARNING]: LOGIN FAILED: INCORRECT EMAIL OR PASSWORD
+Mar 16, 2026 10:17:33 AM infrastructure.log.LoggerService logWarning
+WARNING: [WARNING]: LOGIN FAILED: INCORRECT EMAIL OR PASSWORD
+Mar 16, 2026 10:17:47 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY REGISTERED
+Mar 16, 2026 10:17:55 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY LOGIN
+Mar 16, 2026 10:18:18 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: MILK IS ADDED.

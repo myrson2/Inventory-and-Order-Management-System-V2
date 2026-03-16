@@ -5,7 +5,6 @@ import application.user.UserService;
 import cli.ConsoleUI;
 import infrastructure.file.FileManager;
 import infrastructure.log.LoggerService;
-import util.IdGenerator;
 
 public class App {
     public static void main(String[] args) throws Exception {

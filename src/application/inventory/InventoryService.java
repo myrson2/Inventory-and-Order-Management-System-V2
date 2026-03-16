@@ -89,7 +89,7 @@ public class InventoryService {
         return historyList;
     }
 
-    public List<Product> checkInventory(String adminEmail){
+    public List<Product> getListOfProducts(String adminEmail){
         return getInventory(adminEmail).getProducts();
     }
 }

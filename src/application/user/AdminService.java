@@ -1,8 +1,8 @@
 package application.user;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import application.inventory.InventoryService;
 import domain.product.NonPerishableProducts;
@@ -66,12 +66,28 @@ public class AdminService {
         }
     }
 
-    // public void saveProducts(User user){
-    //     fileManager.saveProducts(user.getName(), inventoryService.);
-    // }
+    public void saveProductsToFile(User user){
+        try {
+            fileManager.saveProducts(user.getEmail(), inventoryService.getListOfProducts(user.getEmail()));
+        } catch (IOException e) {
+            loggerService.logError(user.getEmail(), String.format("[SEVERE]: ERROR SAVING A FILE."));
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void loadProductsToFile(User user){
+        try {
+            fileManager.loadProducts(user.getEmail());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            loggerService.logError(user.getEmail(), String.format("[SEVERE]: ERROR WRITING A FILE."));
+            e.printStackTrace();
+        }
+    }
 
     public void getProducts(User user){
-        List<Product> getProducts = inventoryService.checkInventory(user.getEmail());
+        List<Product> getProducts = inventoryService.getListOfProducts(user.getEmail());
 
         if(getProducts.isEmpty()) return;
 

@@ -124,12 +124,12 @@ public class ConsoleUI {
                                 }
 
                                 System.out.println("Login successful! Welcome, " + loggedInUser.getName());
-
-                                isLogin = true;
                             } else {
                                 // Login failed (it returned null)
                                 System.out.println("Please try again or register a new account.");
                             }
+
+                            isLogin = true;
                         } catch (IllegalArgumentException e) {
                             System.out.println(e.getMessage());
                         }
@@ -230,11 +230,11 @@ public class ConsoleUI {
                 break;
 
                 case 7: // save to file
-                    
+                    adminService.saveProductsToFile(user);
                 break;
 
                 case 8: // load to file
-
+                    adminService.loadProductsToFile(user);
                 break;
                 case 0: // loggin out
                     userService.logout();

@@ -1,0 +1,6 @@
+Mar 16, 2026 10:19:17 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY REGISTERED
+Mar 16, 2026 10:19:28 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY LOGIN
+Mar 16, 2026 10:19:47 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: MILK IS ADDED.
