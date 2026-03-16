@@ -1,51 +1,38 @@
 package util;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class IdGenerator {
-    private static final Set<Integer> userUsedIds = new HashSet<>();
-    private static final Set<Integer> productUsedIds = new HashSet<>();
-    
-    public static String userIDenerateID(){
-        int currentId = 0;
-        final int MAX_ID = 1000;
+    private static final Set<String> userUsedIds = new HashSet<>();
+    private static final Set<String> productUsedIds = new HashSet<>();
+    private static final Set<String> orderUsedIds = new HashSet<>();
+    private static final Random random = new Random();
 
-        if (currentId > MAX_ID) {
-            throw new IllegalStateException("Maximum ID limit reached.");
+    private static String generate(Set<String> usedIds) {
+        final int MAX_ATTEMPTS = 10000; // 0000–9999 = 10000 possible IDs
+
+        for (int attempts = 0; attempts < MAX_ATTEMPTS; attempts++) {
+            String id = String.format("%04d", random.nextInt(10000));
+            if (!usedIds.contains(id)) {
+                usedIds.add(id);
+                return id;
+            }
         }
 
-        while (userUsedIds.contains(currentId)) {
-            currentId++;
-        }
-
-        int id = currentId;
-        userUsedIds.add(id);
-
-        String userId = String.valueOf(id);
-        currentId++;
-
-        return userId;
+        throw new IllegalStateException("Maximum ID limit reached.");
     }
 
-    public static String productIDGenerator(){
-        int currentId = 0;
-        final int MAX_ID = 1000;
+    public static String generateUserID() {
+        return "U-" + generate(userUsedIds);
+    }
 
-        if (currentId > MAX_ID) {
-            throw new IllegalStateException("Maximum ID limit reached.");
-        }
+    public static String generateProductID() {
+        return "P-" + generate(productUsedIds);
+    }
 
-        // Ensure product IDs are unique across all products.
-        while (productUsedIds.contains(currentId)) {
-            currentId++;
-        }
-
-        int id = currentId;
-        productUsedIds.add(id);
-
-        String productId = String.valueOf(id);
-
-        return productId;
+    public static String generateOrderID(){
+        return "O-" + generate(orderUsedIds);
     }
 }

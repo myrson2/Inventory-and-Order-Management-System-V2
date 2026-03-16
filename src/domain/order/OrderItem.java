@@ -6,7 +6,7 @@ public class OrderItem {
     private int quantity;
     private double total;
  
-    public OrderItem(String productId, String productName, int quantity) {
+    public OrderItem(String productId, String productName, int quantity, double total) {
         this.productId   = productId;
         this.productName = productName;
         this.quantity    = quantity;

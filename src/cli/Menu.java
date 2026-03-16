@@ -9,6 +9,9 @@ public class Menu {
     }
 
     public static void AdminOptions(){
+        System.out.println("======================================");
+        System.out.println("=            Admin Options           =");
+        System.out.println("======================================");
         System.out.println("""
             0. Exit
             1. Add Product
@@ -22,6 +25,9 @@ public class Menu {
                 """);
     }
     public static void CustomerOptions(){
+        System.out.println("======================================");
+        System.out.println("=          Customer Options          =");
+        System.out.println("======================================");
         System.out.println("""
             0. Exit
             1. Browse Products
