@@ -6,6 +6,7 @@ import java.util.Scanner;
 import application.user.AdminService;
 import application.user.CustomerService;
 import application.user.UserService;
+import domain.order.Order;
 import domain.order.OrderItem;
 import domain.product.NonPerishableProducts;
 import domain.product.PerishableProducts;
@@ -68,8 +69,6 @@ public class ConsoleUI {
                         System.out.println("======================================");
                         System.out.println("=          User Registration         =");
                         System.out.println("======================================");
-        
-                        String id = IdGenerator.generateUserID();
                         String email = InputUtil.readEmail("Email: ", scan);
                         String password = InputUtil.readPassword("Password: ", scan);
                         String userName = InputUtil.readString("EWhat should we call to you? > ", scan);
@@ -81,11 +80,13 @@ public class ConsoleUI {
                         
                         switch (userType) {
                             case "admin":
-                                user = new Admin(id, userName, email, password);
+                                String adminID = IdGenerator.generateAdminID();
+                                user = new Admin(adminID, userName, email, password);
                                 isRegistered = userService.registerUser(user);
                                 break;
                             case "customer":
-                                user = new Customer(id, userName, email, password);
+                                String customerID = IdGenerator.generateCustomerID();
+                                user = new Customer(customerID, userName, email, password);
                                 isRegistered = userService.registerUser(user);
                                 break;
                             case "exit":
@@ -282,6 +283,7 @@ public class ConsoleUI {
     }
 
     public void customerDashboard(User user){
+        Customer customer = (Customer) user;
         boolean running = true;
 
         do{
@@ -303,22 +305,52 @@ public class ConsoleUI {
 
                 switch (choice) {
                     case 1:
+                        System.out.println("======================================");
+                        System.out.println("=           Browse Products          =");
+                        System.out.println("======================================");
                         customerService.browseProducts(admin);
                     break;
 
                     case 2:
-                        System.out.println("Create a Order: ");
+                        System.out.println("======================================");
+                        System.out.println("=           Create an Order          =");
+                        System.out.println("======================================");
+
                         String productID = InputUtil.readString("Product Id: ", scan);
-                        String productName = InputUtil.readString("Product Name: ", scan);
+                        Product product = customerService.getProducts(productID, admin);
                         int quantity = InputUtil.readInt("Quantity: ", scan);
-                        double total = InputUtil.returnTotal(quantity, customerService.getProducts(productID, admin));
+                        double total = InputUtil.returnTotal(quantity, product.getPrice());
 
-                        OrderItem orderItem = new OrderItem(productID, productName, quantity, total);
+                        Order order = customerService.createOrder(customer);
 
-                        System.out.println("----------------------------------------");
-                        System.out.printf ("  SUMMARY: %d x %s\n", quantity, productName);
-                        System.out.printf ("  TOTAL AMOUNT: $%.2f\n", total);
-                        System.out.println("========================================\n");
+                        customerService.addItemToOrder(order, product, quantity, total);
+                    break;
+
+                    case 3:
+                        System.out.println("======================================");
+                        System.out.println("=           Finalize Order           =");
+                        System.out.println("======================================");
+                    break;
+
+                    case 4:
+                        System.out.println("======================================");
+                        System.out.println("=            Cancel Order            =");
+                        System.out.println("======================================");
+                    break;
+
+                    case 5:
+                        System.out.println("======================================");
+                        System.out.println("=            Order History           =");
+                        System.out.println("======================================");
+                    break;
+
+                    case 6:
+                    break;
+
+                    case 7:
+                    break;
+
+                    case 0:
                     break;
                 
                     default:

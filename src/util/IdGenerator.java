@@ -5,7 +5,8 @@ import java.util.Random;
 import java.util.Set;
 
 public class IdGenerator {
-    private static final Set<String> userUsedIds = new HashSet<>();
+    private static final Set<String> adminIDs = new HashSet<>();
+     private static final Set<String> customerIDs = new HashSet<>();
     private static final Set<String> productUsedIds = new HashSet<>();
     private static final Set<String> orderUsedIds = new HashSet<>();
     private static final Random random = new Random();
@@ -24,8 +25,12 @@ public class IdGenerator {
         throw new IllegalStateException("Maximum ID limit reached.");
     }
 
-    public static String generateUserID() {
-        return "U-" + generate(userUsedIds);
+    public static String generateAdminID() {
+        return "A-" + generate(adminIDs);
+    }
+
+    public static String generateCustomerID() {
+        return "C-" + generate(customerIDs);
     }
 
     public static String generateProductID() {

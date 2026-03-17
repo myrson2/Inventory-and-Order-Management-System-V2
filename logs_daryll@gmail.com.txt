@@ -1,8 +1,0 @@
-Mar 16, 2026 9:47:02 PM infrastructure.log.LoggerService logInfo
-INFO: [INFO]: USER SUCCESSFULLY REGISTERED
-Mar 16, 2026 9:47:11 PM infrastructure.log.LoggerService logWarning
-WARNING: [WARNING]: LOGIN FAILED: INCORRECT EMAIL OR PASSWORD
-Mar 16, 2026 9:47:20 PM infrastructure.log.LoggerService logInfo
-INFO: [INFO]: USER SUCCESSFULLY LOGIN
-Mar 16, 2026 9:49:13 PM infrastructure.log.LoggerService logInfo
-INFO: [INFO]: USER SUCCESSFULLY LOGIN

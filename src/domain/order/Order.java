@@ -3,14 +3,16 @@ package domain.order;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.IdGenerator;
+
 public class Order {
     private String orderId;
     private String customerId;
     private OrderStatus status;
     private List<OrderItem> items;
  
-    public Order(String orderId, String customerId) {
-        this.orderId    = orderId;
+    public Order(String customerId) {
+        this.orderId    = IdGenerator.generateOrderID();
         this.customerId = customerId;
         this.status     = OrderStatus.PENDING;
         this.items      = new ArrayList<>();
@@ -27,5 +29,9 @@ public class Order {
     }
     public OrderStatus getStatus() {
         return status;
+    }
+
+    public void addItem(OrderItem orderItem){
+        getItems().add(orderItem);
     }
 }
