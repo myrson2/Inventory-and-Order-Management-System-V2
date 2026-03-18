@@ -12,7 +12,6 @@ import domain.product.Product;
 import domain.user.Admin;
 import domain.user.Customer;
 import domain.user.User;
-import exception.InsufficientStockException;
 import infrastructure.log.LoggerService;
 
 public class CustomerService {
@@ -61,22 +60,19 @@ public class CustomerService {
     }
 
     public Order createOrder(Customer customer) {
-        Order order = new Order(customer.getId());
-        return order;
+        return orderService.createOrder(customer);
     }
 
-   public void addItemToOrder(Order order, Product product, int quantity, double total) {
+   public void addItemToOrder(Order order, Product product, int quantity) {
+       orderService.addItemToOrder(order, product, quantity);
+    }
 
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("Invalid quantity");
-        }
+    public void finalizeOrder(Order order){
+        orderService.finalizeOrder(order);
+    }
 
-        if (product.getQuantity() < quantity) {
-            throw new InsufficientStockException("Not enough stock");
-        }
 
-        OrderItem item = new OrderItem(product.getId(), quantity, total);
-
-        order.addItem(item);
+    public void cancelOrder(Order order){
+        orderService.cancelOrder(order);
     }
 }

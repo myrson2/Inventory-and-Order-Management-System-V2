@@ -1,6 +1,7 @@
 package cli;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Scanner;
 
 import application.user.AdminService;
@@ -8,6 +9,7 @@ import application.user.CustomerService;
 import application.user.UserService;
 import domain.order.Order;
 import domain.order.OrderItem;
+import domain.order.OrderStatus;
 import domain.product.NonPerishableProducts;
 import domain.product.PerishableProducts;
 import domain.product.Product;
@@ -298,6 +300,7 @@ public class ConsoleUI {
             }
 
             int choice;
+            Order order = null;
 
             do {
                 Menu.CustomerOptions();
@@ -316,38 +319,86 @@ public class ConsoleUI {
                         System.out.println("=           Create an Order          =");
                         System.out.println("======================================");
 
-                        String productID = InputUtil.readString("Product Id: ", scan);
-                        Product product = customerService.getProducts(productID, admin);
-                        int quantity = InputUtil.readInt("Quantity: ", scan);
-                        double total = InputUtil.returnTotal(quantity, product.getPrice());
+                        order = customerService.createOrder(customer);
 
-                        Order order = customerService.createOrder(customer);
-
-                        customerService.addItemToOrder(order, product, quantity, total);
                     break;
 
                     case 3:
                         System.out.println("======================================");
-                        System.out.println("=           Finalize Order           =");
+                        System.out.println("=             Add to Cart            =");
                         System.out.println("======================================");
+
+                        if (order == null) {
+                            System.out.println("No active order. Please create one first.");
+                            break;
+                        }
+                        
+                        String productID = InputUtil.readString("Product Id: ", scan);
+                        Product product = customerService.getProducts(productID, admin);
+                        int quantity = InputUtil.readInt("Quantity: ", scan);
+
+                        customerService.addItemToOrder(order, product, quantity);
                     break;
 
                     case 4:
                         System.out.println("======================================");
-                        System.out.println("=            Cancel Order            =");
+                        System.out.println("=           Finalize Order           =");
                         System.out.println("======================================");
+
+                        List<OrderItem> items = order.getItems();
+
+                        for (OrderItem orderItem : items) {
+                            System.out.println(orderItem.getItemDetails());
+                        }
+
+                        String finalOrder;
+
+                        while (true) {
+                            finalOrder = InputUtil.readString("Confirm Order (Yes/No): ", scan).trim();
+
+                            if (finalOrder.equalsIgnoreCase("yes") || finalOrder.equalsIgnoreCase("no")) {
+                                if (finalOrder.equalsIgnoreCase("yes")) {
+                                    customerService.finalizeOrder(order);
+                                } 
+                                break;
+                            }
+
+                            System.out.println("Invalid input. Please enter Yes or No only.");
+                        }
+
                     break;
 
                     case 5:
                         System.out.println("======================================");
-                        System.out.println("=            Order History           =");
+                        System.out.println("=            Cancel Order            =");
                         System.out.println("======================================");
+
+                        List<OrderItem> itemss = order.getItems();
+
+                        for (OrderItem orderItem : itemss) {
+                            System.out.println(orderItem.getItemDetails());
+                        }
+
+                        String cancelOrder;
+
+                        while (true) {
+                            cancelOrder = InputUtil.readString("Cancel Order (Yes/No): ", scan).trim();
+
+                            if (cancelOrder.equalsIgnoreCase("yes") || cancelOrder.equalsIgnoreCase("no")) {
+                                if (cancelOrder.equalsIgnoreCase("yes")) {
+                                    customerService.cancelOrder(order);
+                                } 
+                                break;
+                            }
+
+                            System.out.println("Invalid input. Please enter Yes or No only.");
+                        }
                     break;
 
                     case 6:
-                    break;
-
-                    case 7:
+                        System.out.println("======================================");
+                        System.out.println("=            Order History           =");
+                        System.out.println("======================================");
                     break;
 
                     case 0:

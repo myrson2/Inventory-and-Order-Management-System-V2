@@ -34,4 +34,30 @@ public class Order {
     public void addItem(OrderItem orderItem){
         getItems().add(orderItem);
     }
+
+    public double calculateTotal(){
+        double total = 0;
+        for (OrderItem orderItem : items) {
+            total += orderItem.getTotal();
+        }
+
+        return total;
+    }
+
+    public void updateOrderStatus(OrderStatus action) {
+
+        if (status != OrderStatus.PENDING) {
+            throw new IllegalStateException("Order already finalized.");
+        }
+
+        if (action == OrderStatus.CONFIRMED) {
+            status = OrderStatus.CONFIRMED;
+
+        } else if (action == OrderStatus.CANCELLED) {
+            status = OrderStatus.CANCELLED;
+
+        } else {
+            throw new IllegalArgumentException("Invalid action.");
+        }
+    }
 }

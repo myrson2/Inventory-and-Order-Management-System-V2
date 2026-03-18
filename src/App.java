@@ -6,6 +6,7 @@ import application.user.CustomerService;
 import application.user.UserService;
 import cli.ConsoleUI;
 import infrastructure.file.FileManager;
+import infrastructure.history.OrderHistory;
 import infrastructure.log.LoggerService;
 
 public class App {
@@ -18,7 +19,8 @@ public class App {
         LoggerService loggerService = new LoggerService();
         FileManager fileManager = new FileManager();
         InventoryService inventoryService = new InventoryService();
-        OrderService orderService = new OrderService();
+        OrderHistory orderHistory = new OrderHistory();
+        OrderService orderService = new OrderService(fileManager, loggerService, inventoryService, orderHistory);
         
         UserService userService = new UserService(loggerService);
         AdminService adminService = new AdminService(inventoryService, loggerService, fileManager);

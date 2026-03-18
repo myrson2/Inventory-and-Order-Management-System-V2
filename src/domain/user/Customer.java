@@ -6,9 +6,8 @@ public class Customer extends User{
         super(id, name, email, password);
     }
     
-    @Override
+     @Override
     public void performRoleAction() {
-       
-        
+        System.out.printf("You are now Admin. Hi %s!", super.getName());
     }
 }

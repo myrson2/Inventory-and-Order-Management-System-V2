@@ -1,0 +1,14 @@
+Mar 18, 2026 3:19:45 PM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY REGISTERED
+Mar 18, 2026 3:19:53 PM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY LOGIN
+Mar 18, 2026 3:23:51 PM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY REGISTERED
+Mar 18, 2026 3:24:05 PM infrastructure.log.LoggerService logWarning
+WARNING: [WARNING]: EMAIL IS ALREADY EXIST.
+Mar 18, 2026 3:24:32 PM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY REGISTERED
+Mar 18, 2026 3:24:39 PM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY LOGIN
+Mar 18, 2026 3:24:50 PM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: MILK IS ADDED.
