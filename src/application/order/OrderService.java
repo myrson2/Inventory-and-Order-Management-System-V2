@@ -6,15 +6,13 @@ import application.inventory.InventoryService;
 import domain.order.Order;
 import domain.order.OrderItem;
 import domain.order.OrderStatus;
-import domain.product.NonPerishableProducts;
-import domain.product.PerishableProducts;
 import domain.product.Product;
-import domain.user.Admin;
 import domain.user.Customer;
 import exception.InsufficientStockException;
 import infrastructure.file.FileManager;
 import infrastructure.history.OrderHistory;
 import infrastructure.log.LoggerService;
+import util.DateUtils;
 
 public class OrderService {
     private InventoryService inventoryService;
@@ -31,6 +29,7 @@ public class OrderService {
 
     public Order createOrder(Customer customer) {
         Order order = new Order(customer.getId());
+        orderHistory.recordOrderCreation(order.getOrderId(), DateUtils.timeStamp());
         return order;
     }
 
@@ -47,14 +46,24 @@ public class OrderService {
         OrderItem item = new OrderItem(product, quantity);
 
         order.addItem(item);
+
+        orderHistory.recordItemAdded(order.getOrderId(), product.getId(), quantity, DateUtils.timeStamp());
     }
 
-    public void finalizeOrder(Order order){
+    public void finalizeOrder(String name, Order order){
         order.updateOrderStatus(OrderStatus.CONFIRMED);
+        orderHistory.recordStatusChange(order.getOrderId(), OrderStatus.CONFIRMED, DateUtils.timeStamp());
+
+        fileManager.saveOrder(name, order.getItems());
     }
 
     public void cancelOrder(Order order){
         order.updateOrderStatus(OrderStatus.CANCELLED);
+        orderHistory.recordStatusChange(order.getOrderId(), OrderStatus.CANCELLED, DateUtils.timeStamp());
+    }
+
+    public List<String> getHistory(){
+        return orderHistory.getHistory();
     }
 
 }

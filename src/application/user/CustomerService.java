@@ -67,12 +67,19 @@ public class CustomerService {
        orderService.addItemToOrder(order, product, quantity);
     }
 
-    public void finalizeOrder(Order order){
-        orderService.finalizeOrder(order);
+    public void finalizeOrder(String name, Order order){
+        orderService.finalizeOrder(name, order);
     }
-
 
     public void cancelOrder(Order order){
         orderService.cancelOrder(order);
+    }
+
+    public void viewOrderHistory(){
+        List<String> orderHistory =  orderService.getHistory();
+        for (String history : orderHistory) {
+            System.out.println(history);
+        }
+
     }
 }

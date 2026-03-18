@@ -23,7 +23,9 @@ public class Menu {
             7. Save To File
             8. Load To File
                 """);
+        System.out.println("======================================");
     }
+
     public static void CustomerOptions(){
         System.out.println("======================================");
         System.out.println("=          Customer Options          =");
@@ -37,5 +39,6 @@ public class Menu {
             5. Cancel Order
             6. View Order History    
         """);
+         System.out.println("======================================");
     }
 }

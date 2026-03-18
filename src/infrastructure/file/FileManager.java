@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import domain.order.OrderItem;
 import domain.product.NonPerishableProducts;
 import domain.product.PerishableProducts;
 import domain.product.Product;
@@ -56,6 +57,21 @@ public class FileManager {
             while((adminFIles = reader.readLine()) != null){
                 System.out.println(adminFIles);
             }
+        } catch (IOException e) {
+            System.out.println("Error writing file.");
+        }
+    }
+
+    public void saveOrder(String name, List<OrderItem> items){
+        File customerFile = createFile(name);
+        
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(customerFile))) {
+            writer.write(name + "'s Cart: \n");
+            for (OrderItem orderItem : items) {
+                writer.write(orderItem.getItemDetails());
+            }
+
+            writer.close();
         } catch (IOException e) {
             System.out.println("Error writing file.");
         }

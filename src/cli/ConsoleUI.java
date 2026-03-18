@@ -351,6 +351,10 @@ public class ConsoleUI {
                             System.out.println(orderItem.getItemDetails());
                         }
 
+                        System.out.println("Total: " + order.calculateTotal());
+
+                        System.out.println("--------------------------------------\n");
+
                         String finalOrder;
 
                         while (true) {
@@ -358,7 +362,7 @@ public class ConsoleUI {
 
                             if (finalOrder.equalsIgnoreCase("yes") || finalOrder.equalsIgnoreCase("no")) {
                                 if (finalOrder.equalsIgnoreCase("yes")) {
-                                    customerService.finalizeOrder(order);
+                                    customerService.finalizeOrder(customer.getName(), order);
                                 } 
                                 break;
                             }
@@ -399,6 +403,9 @@ public class ConsoleUI {
                         System.out.println("======================================");
                         System.out.println("=            Order History           =");
                         System.out.println("======================================");
+
+                        customerService.viewOrderHistory();
+
                     break;
 
                     case 0:
