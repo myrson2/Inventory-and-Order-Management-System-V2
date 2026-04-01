@@ -15,6 +15,8 @@ import domain.product.Product;
 import domain.user.Admin;
 import domain.user.Customer;
 import domain.user.User;
+import exception.EntityNotFountException;
+import infrastructure.notification.NotificationService;
 import util.DateUtils;
 import util.IdGenerator;
 import util.InputUtil;
@@ -25,17 +27,20 @@ public class ConsoleUI {
     private AdminService adminService;
     private CustomerService customerService;
     private UserService userService;
+    private NotificationService notificationService;
     private Product product;
 
-    public ConsoleUI(UserService userService, AdminService adminService, CustomerService customerService, Scanner scan){
+    public ConsoleUI(NotificationService notificationService, UserService userService, AdminService adminService, CustomerService customerService, Scanner scan){
         this.userService = userService;
         this.scan = scan;
         this.adminService = adminService;
         this.customerService = customerService;
+        this.notificationService = notificationService;
     }
 
     // Execution Starts
-    public void start(){
+    public void start()
+    {
         // Opening the App 
         boolean running = true;
         while(running){
@@ -49,7 +54,8 @@ public class ConsoleUI {
         }
     }
 
-    public void handleUserInput(){
+    public void handleUserInput()
+    {
         int choice;
 
         // User Authentication Flow
@@ -65,6 +71,143 @@ public class ConsoleUI {
             }
         } while(choice != 3);
     }
+
+    public void customerDashboard(User user)
+    {
+        Customer customer = (Customer) user;
+        boolean running = true;
+
+        do{
+            userService.displayAdmin();
+            String adminName = InputUtil.readString("> ", scan);
+
+           // accessing which store is chosen by the customer
+            try {
+                Admin admin = userService.getAdmin(adminName); 
+                int choice;
+                Order order = null;
+
+                do {
+                    Menu.CustomerOptions();
+                    choice = InputUtil.readInt("Enter choice: ", scan);
+
+                    switch (choice) {
+                        case 1:
+                            System.out.println("======================================");
+                            System.out.println("=           Browse Products          =");
+                            System.out.println("======================================");
+                            customerService.browseProducts(admin);
+                        break;
+
+                        case 2:
+                            System.out.println("======================================");
+                            System.out.println("=           Create an Order          =");
+                            System.out.println("======================================");
+                            order = customerService.createOrder(customer, admin);
+                        break;
+
+                        case 3:
+                            System.out.println("======================================");
+                            System.out.println("=             Add to Cart            =");
+                            System.out.println("======================================");
+
+                            if (order == null) {
+                                System.out.println("No active order. Please create one first.");
+                                break;
+                            }
+                            
+                            String productID = InputUtil.readString("Product Id: ", scan);
+                            Product product = customerService.getProducts(productID, admin);
+                            int quantity = InputUtil.readInt("Quantity: ", scan);
+
+                            customerService.addItemToOrder(order, product, quantity);
+                        break;
+
+                        case 4:
+                            System.out.println("======================================");
+                            System.out.println("=           Finalize Order           =");
+                            System.out.println("======================================");
+
+                            List<OrderItem> items = order.getItems();
+
+                            for (OrderItem orderItem : items) {
+                                System.out.println(orderItem.getItemDetails());
+                            }
+
+                            System.out.println("Total: " + order.calculateTotal());
+
+                            System.out.println("--------------------------------------\n");
+
+                            String finalOrder;
+
+                            while (true) {
+                                finalOrder = InputUtil.readString("Confirm Order (Yes/No): ", scan).trim();
+
+                                if (finalOrder.equalsIgnoreCase("yes") || finalOrder.equalsIgnoreCase("no")) {
+                                    if (finalOrder.equalsIgnoreCase("yes")) {
+                                        customerService.finalizeOrder(customer.getName(), order);
+                                    } 
+                                    break;
+                                }
+
+                                System.out.println("Invalid input. Please enter Yes or No only.");
+                            }
+
+                        break;
+
+                        case 5:
+                            System.out.println("======================================");
+                            System.out.println("=            Cancel Order            =");
+                            System.out.println("======================================");
+
+                            List<OrderItem> itemss = order.getItems();
+
+                            for (OrderItem orderItem : itemss) {
+                                System.out.println(orderItem.getItemDetails());
+                            }
+
+                            String cancelOrder;
+
+                            while (true) {
+                                cancelOrder = InputUtil.readString("Cancel Order (Yes/No): ", scan).trim();
+
+                                if (cancelOrder.equalsIgnoreCase("yes") || cancelOrder.equalsIgnoreCase("no")) {
+                                    if (cancelOrder.equalsIgnoreCase("yes")) {
+                                        customerService.cancelOrder(order);
+                                    } 
+                                    break;
+                                }
+
+                                System.out.println("Invalid input. Please enter Yes or No only.");
+                            }
+                        break;
+
+                        case 6:
+                            System.out.println("======================================");
+                            System.out.println("=            Order History           =");
+                            System.out.println("======================================");
+
+                            customerService.viewOrderHistory();
+
+                        break;
+
+                        case 0:
+                        break;
+                    
+                        default:
+                            break;
+                    }
+                } while (choice != 0);
+
+              } catch (EntityNotFountException e){
+                notificationService.notify(e.getMessage());
+            }
+        } while (running);
+    }
+
+    // Customer Dashboard Responsibility Functions =====================================
+
+
 
     public void adminDashboard(User user)
     {
@@ -92,6 +235,13 @@ public class ConsoleUI {
                     System.out.println("=           View All Orders          =");
                     System.out.println("======================================");
                     System.out.println("// Still not implemented //");
+                    /*
+                        1 - Customer Creates an Order
+                        2 - Access The Customer Order in OrderService
+                        3 - get the Order to the created HashMap in OrderService
+                        4 - Access Order Items from the Order
+                        5 - loop all customer that buys in admin stores
+                    */
                 }
                 case 5 -> viewLogs(user);
                 case 6 -> viewInventoryHistory(user);
@@ -108,143 +258,6 @@ public class ConsoleUI {
 
         }while(running);
     }
-
-    public void customerDashboard(User user)
-    {
-        Customer customer = (Customer) user;
-        boolean running = true;
-
-        do{
-            userService.displayAdmin();
-            String adminName = InputUtil.readString("> ", scan);
-
-            Admin admin = userService.getAdmin(adminName); // accessing which store is chosen by the customer
-
-            if(admin == null) {
-                System.out.println("Not found");
-                continue;
-            }
-
-            int choice;
-            Order order = null;
-
-            do {
-                Menu.CustomerOptions();
-                choice = InputUtil.readInt("Enter choice: ", scan);
-
-                switch (choice) {
-                    case 1:
-                        System.out.println("======================================");
-                        System.out.println("=           Browse Products          =");
-                        System.out.println("======================================");
-                        customerService.browseProducts(admin);
-                    break;
-
-                    case 2:
-                        System.out.println("======================================");
-                        System.out.println("=           Create an Order          =");
-                        System.out.println("======================================");
-
-                        order = customerService.createOrder(customer);
-
-                    break;
-
-                    case 3:
-                        System.out.println("======================================");
-                        System.out.println("=             Add to Cart            =");
-                        System.out.println("======================================");
-
-                        if (order == null) {
-                            System.out.println("No active order. Please create one first.");
-                            break;
-                        }
-                        
-                        String productID = InputUtil.readString("Product Id: ", scan);
-                        Product product = customerService.getProducts(productID, admin);
-                        int quantity = InputUtil.readInt("Quantity: ", scan);
-
-                        customerService.addItemToOrder(order, product, quantity);
-                    break;
-
-                    case 4:
-                        System.out.println("======================================");
-                        System.out.println("=           Finalize Order           =");
-                        System.out.println("======================================");
-
-                        List<OrderItem> items = order.getItems();
-
-                        for (OrderItem orderItem : items) {
-                            System.out.println(orderItem.getItemDetails());
-                        }
-
-                        System.out.println("Total: " + order.calculateTotal());
-
-                        System.out.println("--------------------------------------\n");
-
-                        String finalOrder;
-
-                        while (true) {
-                            finalOrder = InputUtil.readString("Confirm Order (Yes/No): ", scan).trim();
-
-                            if (finalOrder.equalsIgnoreCase("yes") || finalOrder.equalsIgnoreCase("no")) {
-                                if (finalOrder.equalsIgnoreCase("yes")) {
-                                    customerService.finalizeOrder(customer.getName(), order);
-                                } 
-                                break;
-                            }
-
-                            System.out.println("Invalid input. Please enter Yes or No only.");
-                        }
-
-                    break;
-
-                    case 5:
-                        System.out.println("======================================");
-                        System.out.println("=            Cancel Order            =");
-                        System.out.println("======================================");
-
-                        List<OrderItem> itemss = order.getItems();
-
-                        for (OrderItem orderItem : itemss) {
-                            System.out.println(orderItem.getItemDetails());
-                        }
-
-                        String cancelOrder;
-
-                        while (true) {
-                            cancelOrder = InputUtil.readString("Cancel Order (Yes/No): ", scan).trim();
-
-                            if (cancelOrder.equalsIgnoreCase("yes") || cancelOrder.equalsIgnoreCase("no")) {
-                                if (cancelOrder.equalsIgnoreCase("yes")) {
-                                    customerService.cancelOrder(order);
-                                } 
-                                break;
-                            }
-
-                            System.out.println("Invalid input. Please enter Yes or No only.");
-                        }
-                    break;
-
-                    case 6:
-                        System.out.println("======================================");
-                        System.out.println("=            Order History           =");
-                        System.out.println("======================================");
-
-                        customerService.viewOrderHistory();
-
-                    break;
-
-                    case 0:
-                    break;
-                
-                    default:
-                        break;
-                }
-            } while (choice != 0);
-
-        } while (running);
-    }
-
     // Admin Dashboard Responsibility Functions =======================================
     public void addProduct(User user)
     {

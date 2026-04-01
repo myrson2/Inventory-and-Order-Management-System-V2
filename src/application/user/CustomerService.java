@@ -12,6 +12,7 @@ import domain.product.Product;
 import domain.user.Admin;
 import domain.user.Customer;
 import domain.user.User;
+import exception.EntityNotFountException;
 import infrastructure.log.LoggerService;
 
 public class CustomerService {
@@ -25,8 +26,10 @@ public class CustomerService {
         this.loggerService = loggerService;
     }
 
-    public void browseProducts(Admin choosenAdmin){
-        List<Product> getProducts = inventoryService.getListOfProducts(choosenAdmin.getEmail());
+    public void browseProducts(Admin choosenAdmin)
+    {
+       try {
+         List<Product> getProducts = inventoryService.getListOfProducts(choosenAdmin.getEmail());
 
         if(getProducts.isEmpty()) return;
 
@@ -45,10 +48,15 @@ public class CustomerService {
                 System.out.println(product.getProductDetails());
             }
         }
+       } catch (EntityNotFountException e) {
+            e.getMessage();
+       }
     }
 
-    public Product getProducts(String productId, User user){ 
-        List<Product> adminProducts = inventoryService.getListOfProducts(user.getEmail()); 
+    public Product getProducts(String productId, User user)
+    { 
+        try {
+            List<Product> adminProducts = inventoryService.getListOfProducts(user.getEmail()); 
 
         for (Product product : adminProducts) {
             if (productId.equalsIgnoreCase(product.getId())) {
@@ -57,10 +65,15 @@ public class CustomerService {
         }
 
         throw new IllegalArgumentException("Product with id " + productId + " not found");
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return null;
     }
 
-    public Order createOrder(Customer customer) {
-        return orderService.createOrder(customer);
+    public Order createOrder(Customer customer, Admin admin) 
+    {
+        return orderService.createOrder(customer, admin);
     }
 
    public void addItemToOrder(Order order, Product product, int quantity) {

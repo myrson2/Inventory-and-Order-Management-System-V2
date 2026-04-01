@@ -5,6 +5,7 @@ import java.util.List;
 
 import domain.user.Admin;
 import domain.user.User;
+import exception.EntityNotFountException;
 import infrastructure.log.LoggerService;
 
 public class UserService {
@@ -49,7 +50,6 @@ public class UserService {
             loggerService.logWarning(newUser.getEmail(), "[WARNING]: EMAIL IS ALREADY EXIST.");
             return false;
         }
-        
         users.add(newUser);
         loggerService.logInfo(newUser.getEmail(), "[INFO]: USER SUCCESSFULLY REGISTERED");
         return true;
@@ -81,12 +81,12 @@ public class UserService {
         }
     }
 
-    public Admin getAdmin(String name){
+    public Admin getAdmin(String name) throws EntityNotFountException{
         for (User u : users) {
             if (u instanceof Admin && u.getName().equalsIgnoreCase(name)) {
                 return (Admin) u;
             }
         }
-        return null;
+        throw new EntityNotFountException("Admin not found.");
     }
 }

@@ -113,12 +113,12 @@ public class InventoryService {
 }
 
     public ArrayList<String> viewInventoryHistory(String adminEmail){
-        ArrayList<String> historyList = getHistory(adminEmail).getHistory();
-
-        return historyList;
+        return getHistory(adminEmail).getHistory();
     }
 
-    public List<Product> getListOfProducts(String adminEmail){
-        return getInventory(adminEmail).getProducts();
+    public List<Product> getListOfProducts(String adminEmail) throws EntityNotFountException{
+        List<Product> product = getInventory(adminEmail).getProducts();
+        if(product == null) throw new EntityNotFountException("Admin not Found.");
+        return product;
     }
 }

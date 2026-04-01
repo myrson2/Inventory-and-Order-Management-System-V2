@@ -2,7 +2,6 @@ package domain.order;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import util.IdGenerator;
 
 public class Order {
@@ -31,10 +30,6 @@ public class Order {
         return status;
     }
 
-    public void addItem(OrderItem orderItem){
-        getItems().add(orderItem);
-    }
-
     public double calculateTotal(){
         double total = 0;
         for (OrderItem orderItem : items) {
@@ -59,5 +54,9 @@ public class Order {
         } else {
             throw new IllegalArgumentException("Invalid action.");
         }
+    }
+
+    public void validateOrder(){
+        System.out.println("Not Yet Implemented.");
     }
 }

@@ -8,6 +8,7 @@ import domain.order.Order;
 import domain.order.OrderItem;
 import domain.order.OrderStatus;
 import domain.product.Product;
+import domain.user.Admin;
 import domain.user.Customer;
 import exception.InsufficientStockException;
 import infrastructure.file.FileManager;
@@ -22,6 +23,7 @@ public class OrderService {
     private OrderHistory orderHistory;
 
     public HashMap<String, Order> orderList = new HashMap<>();
+    
 
     public OrderService(FileManager fileManager, LoggerService loggerService, InventoryService inventoryService, OrderHistory orderHistory){
         this.inventoryService = inventoryService;
@@ -30,8 +32,9 @@ public class OrderService {
         this.orderHistory = orderHistory;
     }
 
-    public Order createOrder(Customer customer) {
+    public Order createOrder(Customer customer, Admin admin) {
         Order order = new Order(customer.getId());
+        
         orderHistory.recordOrderCreation(order.getOrderId(), DateUtils.timeStamp());
         return order;
     }
@@ -47,9 +50,7 @@ public class OrderService {
         }
 
         OrderItem item = new OrderItem(product, quantity);
-
-        order.addItem(item);
-
+        order.getItems().add(item);
         orderHistory.recordItemAdded(order.getOrderId(), product.getId(), quantity, DateUtils.timeStamp());
     }
 
@@ -68,5 +69,4 @@ public class OrderService {
     public List<String> getHistory(){
         return orderHistory.getHistory();
     }
-
 }
