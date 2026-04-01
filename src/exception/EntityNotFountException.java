@@ -1,5 +1,7 @@
 package exception;
 
-public class EntityNotFountException {
-    
+public class EntityNotFountException extends Exception{
+    public EntityNotFountException (String message){
+        super(message);
+    }
 }

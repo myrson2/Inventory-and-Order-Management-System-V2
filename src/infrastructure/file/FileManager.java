@@ -42,9 +42,11 @@ public class FileManager {
                 if(product instanceof PerishableProducts) writer.write(product.getProductDetails());
             }
 
+            writer.newLine();
             writer.close();
         } catch (IOException e) {
-            System.out.println("Error writing file.");
+            System.out.println("Error saving Products.");
+             e.printStackTrace(); // Print error details
         }
     }
 
@@ -58,7 +60,8 @@ public class FileManager {
                 System.out.println(adminFIles);
             }
         } catch (IOException e) {
-            System.out.println("Error writing file.");
+            System.out.println("Error loading Products.");
+             e.printStackTrace(); // Print error details
         }
     }
 
@@ -73,8 +76,25 @@ public class FileManager {
 
             writer.close();
         } catch (IOException e) {
-            System.out.println("Error writing file.");
+            System.out.println("Error saving Order.");
+             e.printStackTrace(); // Print error details
         }
     }
+
+    public void loadOrder(String name) throws IOException{
+        File adminFile = createFile(name);
+
+        try(BufferedReader reader = new BufferedReader(new FileReader(adminFile))){
+            String adminFIles;
+
+            while((adminFIles = reader.readLine()) != null){
+                System.out.println(adminFIles);
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading Order.");
+             e.printStackTrace(); // Print error details
+        }
+    }
+
 }
     

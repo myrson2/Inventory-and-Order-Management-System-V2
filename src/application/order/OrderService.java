@@ -1,5 +1,6 @@
 package application.order;
 
+import java.util.HashMap;
 import java.util.List;
 
 import application.inventory.InventoryService;
@@ -19,6 +20,8 @@ public class OrderService {
     private LoggerService loggerService;
     private FileManager fileManager;
     private OrderHistory orderHistory;
+
+    public HashMap<String, Order> orderList = new HashMap<>();
 
     public OrderService(FileManager fileManager, LoggerService loggerService, InventoryService inventoryService, OrderHistory orderHistory){
         this.inventoryService = inventoryService;

@@ -1,0 +1,2 @@
+ID: P-3682 || Name: Samsung || Price: 90000.00 || quantity: 1 || Warranty (Months): 24
+ID: P-0308 || Name: Nori || Price: 17.00 || quantity: 5 || Expiration Date: 2026-12-12ID: P-6984 || Name: Milk || Price: 12.00 || quantity: 1 || Expiration Date: 2026-12-12

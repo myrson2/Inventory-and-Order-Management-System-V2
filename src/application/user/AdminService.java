@@ -23,9 +23,9 @@ public class AdminService {
         this.loggerService = loggerService;
     }
 
-    public void addProduct(User user, Product product){
+    public void addProduct(User user, Product product)
+    {
         boolean isAdded = inventoryService.addProduct(user.getEmail(), product);
-
         if(isAdded){
             loggerService.logInfo(user.getEmail(), String.format("[INFO]: %s is added.".toUpperCase(), product.getName()).toUpperCase());
         } else {
@@ -33,9 +33,9 @@ public class AdminService {
         }
     }
 
-    public void updateStock(User user, String id, int newQuantity){
+    public void updateStock(User user, String id, int newQuantity)
+    {
         boolean isUpdated = inventoryService.updateStock(user.getEmail(), id, newQuantity, loggerService);
-
         if (isUpdated) {
             loggerService.logInfo(user.getEmail(), String.format("[INFO]: Product Successfully Updated.".toUpperCase()));
         } else {
@@ -43,17 +43,17 @@ public class AdminService {
         }
     }
 
-    public void removeProduct(User user, String id){
+    public void removeProduct(User user, String id)
+    {
         boolean isRemoved = inventoryService.removeProduct(user.getEmail(), id);
-
-        if (isRemoved) {
+        if (!isRemoved) {
             loggerService.logInfo(user.getEmail(), String.format("[WARNING]: Product NOT found."));
-        } else {
+        } 
             loggerService.logInfo(user.getEmail(), String.format("[INFO]: Product Successfully Removed."));
-        }
     }
 
-    public void viewInventoryHistory(User user){
+    public void viewInventoryHistory(User user)
+    {
         ArrayList<String> historyList = inventoryService.viewInventoryHistory(user.getEmail());
 
         if (historyList.isEmpty()) {
@@ -66,7 +66,8 @@ public class AdminService {
         }
     }
 
-    public void saveProductsToFile(User user){
+    public void saveProductsToFile(User user)
+    {
         try {
             fileManager.saveProducts(user.getEmail(), inventoryService.getListOfProducts(user.getEmail()));
         } catch (IOException e) {
@@ -76,7 +77,8 @@ public class AdminService {
         }
     }
 
-    public void loadProductsToFile(User user){
+    public void loadProductsToFile(User user)
+    {
         try {
             fileManager.loadProducts(user.getEmail());
         } catch (IOException e) {
@@ -86,10 +88,15 @@ public class AdminService {
         }
     }
 
-    public void printProducts(User user){
+    public void printProducts(User user)
+    {
         List<Product> getProducts = inventoryService.getListOfProducts(user.getEmail());
 
-        if(getProducts.isEmpty()) return;
+        if(getProducts.isEmpty())
+        {
+            System.out.println("Empty Inventory");
+            return;
+        }
 
         System.out.println("Non-Perishable Products: ");
         for (Product product : getProducts) {
@@ -108,7 +115,8 @@ public class AdminService {
         }
     }
 
-    public void viewLogs(User user){
+    public void viewLogs(User user)
+    {
         loggerService.displayLogs(user.getEmail());
     }
 }

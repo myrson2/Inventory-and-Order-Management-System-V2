@@ -7,43 +7,57 @@ import java.util.Map;
 
 import domain.inventory.Inventory;
 import domain.product.Product;
+import exception.EntityNotFountException;
+import infrastructure.file.FileManager;
 import infrastructure.history.InventoryHistory;
 import infrastructure.log.LoggerService;
+import infrastructure.notification.NotificationService;
 import util.DateUtils;
 
 public class InventoryService {
+    private FileManager fileManager;
+    private LoggerService loggerService;
+    private InventoryHistory inventoryHistory;
+    private NotificationService notificationService;
+
     // 1. HashMaps to act as your "database" for each admin
     private Map<String, Inventory> adminInventories = new HashMap<>();
     private Map<String, InventoryHistory> adminHistories = new HashMap<>();
 
-    public InventoryService() {
-        // We no longer need to pass InventoryHistory in the constructor 
-        // because we create them automatically in the helper method below.
+    public InventoryService(FileManager fileManager, LoggerService loggerService, InventoryHistory inventoryHistory, NotificationService notificationService) {
+        this.fileManager = fileManager;
+        this.loggerService = loggerService;
+        this.inventoryHistory = inventoryHistory;
+        this.notificationService = notificationService;
     } 
 
     // 2. Helper Method: Gets the admin's inventory, or creates a new one if it doesn't exist yet
-    private Inventory getInventory(String adminEmail) {
+    private Inventory getInventory(String adminEmail) 
+    {
         adminInventories.putIfAbsent(adminEmail, new Inventory());
-        return adminInventories.get(adminEmail);
+        return adminInventories.get(adminEmail); // return inventory associated to admin email 
     }
     // 3. Helper Method: Gets the admin's history, or creates a new one if it doesn't exist yet
     private InventoryHistory getHistory(String adminEmail) {
-        adminHistories.putIfAbsent(adminEmail, new InventoryHistory());
+        adminHistories.putIfAbsent(adminEmail, inventoryHistory);
         return adminHistories.get(adminEmail);
     }
 
     // 4. Update all methods to require 'adminEmail' to find the correct data
-    public boolean addProduct(String adminEmail, Product product){
+    public boolean addProduct(String adminEmail, Product product)
+    {
         try {
-            getInventory(adminEmail).addProduct(product);
+            getInventory(adminEmail).addProduct(product); 
             getHistory(adminEmail).recordAddProduct(product, DateUtils.timeStamp());
+            notificationService.notify("[NOTIFICATION]: Successfully Added a Product\n");
             return true;
         } catch (Exception e) {
             return false;
         }
     }
 
-    public boolean updateStock(String adminEmail, String id, int quantity, LoggerService loggerService) {
+    public boolean updateStock(String adminEmail, String id, int quantity, LoggerService loggerService) 
+    {
         try {
             Inventory inventory = getInventory(adminEmail);
             InventoryHistory history = getHistory(adminEmail);
@@ -52,6 +66,7 @@ public class InventoryService {
             if (product == null) {
                 return false;
             }
+
             if (quantity == 0) return false;
 
             if (quantity > 0) {
@@ -61,13 +76,24 @@ public class InventoryService {
                 product.decreaseStock(quantity);
                 history.recordStockDecrease(id, quantity, DateUtils.timeStamp());
             }
+
+            if(product.getQuantity() < 2){
+                notificationService.notifyLowStock(product);
+                loggerService.logWarning(adminEmail, String.format("[WARNING]: LOW STOCK IN %s", product.getName().toUpperCase()));
+            }
+
+            notificationService.notify("[NOTIFICATION]: Successfully Updated");
             return true;
-        } catch (Exception e) {
+        } catch (EntityNotFountException e) {
+            notificationService.notify("[NOTIFICATION]: Failed To Update");
+            e.getMessage();
+            // e.printStackTrace();
             return false;
         }
     }
 
-    public boolean removeProduct(String adminEmail, String id) {
+    public boolean removeProduct(String adminEmail, String id) 
+    {
     try {
         Inventory inventory = getInventory(adminEmail);
         InventoryHistory history = getHistory(adminEmail);
@@ -77,8 +103,11 @@ public class InventoryService {
 
         inventory.getProducts().remove(product);
         history.recordProductRemoval(id, DateUtils.timeStamp());
+        notificationService.notify("[NOTIFICATION]: Successfully Remove");
         return true;
-    } catch (Exception e) {
+    } catch (EntityNotFountException e) {
+        notificationService.notify("[NOTIFICATION]: Failed To Remove");
+        e.getMessage();
         return false;
     }
 }
