@@ -15,6 +15,7 @@ import exception.InsufficientStockException;
 import infrastructure.file.FileManager;
 import infrastructure.history.OrderHistory;
 import infrastructure.log.LoggerService;
+import infrastructure.notification.NotificationService;
 import util.DateUtils;
 
 public class OrderService {
@@ -22,14 +23,16 @@ public class OrderService {
     private LoggerService loggerService;
     private FileManager fileManager;
     private OrderHistory orderHistory;
+    private NotificationService notificationService;
 
     private HashMap<String, ArrayList<Order>> orderList = new HashMap<>();
     
-    public OrderService(FileManager fileManager, LoggerService loggerService, InventoryService inventoryService, OrderHistory orderHistory){
+    public OrderService(NotificationService notificationService,FileManager fileManager, LoggerService loggerService, InventoryService inventoryService, OrderHistory orderHistory){
         this.inventoryService = inventoryService;
         this.loggerService = loggerService;
         this.fileManager = fileManager;
         this.orderHistory = orderHistory;
+        this.notificationService = notificationService;
     }
 
     public Order createOrder(Customer customer, Admin admin) {
@@ -57,6 +60,7 @@ public class OrderService {
     public void finalizeOrder(String name, Order order){
         order.updateOrderStatus(OrderStatus.CONFIRMED);
         orderHistory.recordStatusChange(order.getOrderId(), OrderStatus.CONFIRMED, DateUtils.timeStamp());
+        notificationService.notifyOrderStatusChange(order);
 
         fileManager.saveOrder(name, order.getItems());
     }
@@ -64,6 +68,7 @@ public class OrderService {
     public void cancelOrder(Order order){
         order.updateOrderStatus(OrderStatus.CANCELLED);
         orderHistory.recordStatusChange(order.getOrderId(), OrderStatus.CANCELLED, DateUtils.timeStamp());
+        notificationService.notifyOrderStatusChange(order);
     }
 
     public List<String> getHistory(){

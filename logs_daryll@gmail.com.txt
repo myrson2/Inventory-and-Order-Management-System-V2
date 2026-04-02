@@ -1,4 +1,0 @@
-Apr 02, 2026 11:50:43 AM infrastructure.log.LoggerService logInfo
-INFO: [INFO]: USER SUCCESSFULLY REGISTERED
-Apr 02, 2026 11:50:51 AM infrastructure.log.LoggerService logInfo
-INFO: [INFO]: USER SUCCESSFULLY LOGIN

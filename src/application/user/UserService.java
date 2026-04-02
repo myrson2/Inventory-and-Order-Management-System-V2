@@ -5,7 +5,7 @@ import java.util.List;
 
 import domain.user.Admin;
 import domain.user.User;
-import exception.EntityNotFountException;
+import exception.EntityNotFoundException;
 import infrastructure.log.LoggerService;
 
 public class UserService {
@@ -82,12 +82,12 @@ public class UserService {
         }
     }
 
-    public Admin getAdmin(String name) throws EntityNotFountException{
+    public Admin getAdmin(String name) throws EntityNotFoundException{
         for (User u : users) {
             if (u instanceof Admin && u.getName().equalsIgnoreCase(name)) {
                 return (Admin) u;
             } 
         }
-        throw new EntityNotFountException("Admin not found.");
+        throw new EntityNotFoundException("Admin not found.");
     }
 }

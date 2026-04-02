@@ -7,7 +7,7 @@ import java.util.Map;
 
 import domain.inventory.Inventory;
 import domain.product.Product;
-import exception.EntityNotFountException;
+import exception.EntityNotFoundException;
 import infrastructure.file.FileManager;
 import infrastructure.history.InventoryHistory;
 import infrastructure.log.LoggerService;
@@ -84,7 +84,7 @@ public class InventoryService {
 
             notificationService.notify("[NOTIFICATION]: Successfully Updated");
             return true;
-        } catch (EntityNotFountException e) {
+        } catch (EntityNotFoundException e) {
             notificationService.notify("[NOTIFICATION]: Failed To Update");
             e.getMessage();
             // e.printStackTrace();
@@ -105,7 +105,7 @@ public class InventoryService {
         history.recordProductRemoval(id, DateUtils.timeStamp());
         notificationService.notify("[NOTIFICATION]: Successfully Remove");
         return true;
-    } catch (EntityNotFountException e) {
+    } catch (EntityNotFoundException e) {
         notificationService.notify("[NOTIFICATION]: Failed To Remove");
         e.getMessage();
         return false;
@@ -116,9 +116,9 @@ public class InventoryService {
         return getHistory(adminEmail).getHistory();
     }
 
-    public List<Product> getListOfProducts(String adminEmail) throws EntityNotFountException{
+    public List<Product> getListOfProducts(String adminEmail) throws EntityNotFoundException{
         List<Product> product = getInventory(adminEmail).getProducts();
-        if(product == null) throw new EntityNotFountException("Admin not Found.");
+        if(product == null) throw new EntityNotFoundException("Admin not Found.");
         return product;
     }
 }

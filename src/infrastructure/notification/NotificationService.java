@@ -16,6 +16,6 @@ public class NotificationService {
 
     public void notifyOrderStatusChange(Order order)
     {
-        System.out.println("[NOTIFICATION]: " + );
+        System.out.println("[NOTIFICATION]: Changed to " + order.getStatus());
     }
 }

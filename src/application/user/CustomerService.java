@@ -5,14 +5,13 @@ import java.util.List;
 import application.inventory.InventoryService;
 import application.order.OrderService;
 import domain.order.Order;
-import domain.order.OrderItem;
 import domain.product.NonPerishableProducts;
 import domain.product.PerishableProducts;
 import domain.product.Product;
 import domain.user.Admin;
 import domain.user.Customer;
 import domain.user.User;
-import exception.EntityNotFountException;
+import exception.EntityNotFoundException;
 import infrastructure.log.LoggerService;
 
 public class CustomerService {
@@ -48,7 +47,7 @@ public class CustomerService {
                 System.out.println(product.getProductDetails());
             }
         }
-       } catch (EntityNotFountException e) {
+       } catch (EntityNotFoundException e) {
             e.getMessage();
        }
     }

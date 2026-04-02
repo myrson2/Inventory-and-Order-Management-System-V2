@@ -30,7 +30,7 @@ public class App {
         OrderHistory orderHistory = new OrderHistory();
 
         // Services
-        OrderService orderService = new OrderService(fileManager, loggerService, inventoryService, orderHistory);
+        OrderService orderService = new OrderService(notificationService, fileManager, loggerService, inventoryService, orderHistory);
         UserService userService = new UserService(loggerService);
         AdminService adminService = new AdminService(orderService, inventoryService, loggerService, fileManager);
         CustomerService customerService = new CustomerService(orderService, inventoryService, loggerService);

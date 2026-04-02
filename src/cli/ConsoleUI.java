@@ -15,7 +15,7 @@ import domain.product.Product;
 import domain.user.Admin;
 import domain.user.Customer;
 import domain.user.User;
-import exception.EntityNotFountException;
+import exception.EntityNotFoundException;
 import infrastructure.notification.NotificationService;
 import util.DateUtils;
 import util.IdGenerator;
@@ -200,13 +200,11 @@ public class ConsoleUI {
                     }
                 } while (choice != 0);
 
-              } catch (EntityNotFountException e){
+              } catch (EntityNotFoundException e){
                 notificationService.notify(e.getMessage());
             }
         } while (running);
     }
-
-    // Customer Dashboard Responsibility Functions =====================================
     
     public void adminDashboard(User user)
     {
@@ -229,19 +227,7 @@ public class ConsoleUI {
                 case 1 -> addProduct(user);
                 case 2 -> updateStock(user);
                 case 3 -> removeProduct(user);
-                case 4 -> { // view all orders
-                    System.out.println("======================================");
-                    System.out.println("=           View All Orders          =");
-                    System.out.println("======================================");
-                    System.out.println("// Still not implemented //");
-                    /*
-                        1 - Customer Creates an Order
-                        2 - Access The Customer Order in OrderService
-                        3 - get the Order to the created HashMap in OrderService
-                        4 - Access Order Items from the Order
-                        5 - loop all customer that buys in admin stores
-                    */
-                }
+                case 4 -> viewOrders(user);
                 case 5 -> viewLogs(user);
                 case 6 -> viewInventoryHistory(user);
                 case 7 -> saveFile(user);
@@ -336,6 +322,14 @@ public class ConsoleUI {
         System.out.println("=           View Admin Logs          =");
         System.out.println("======================================");
         adminService.viewLogs(user);
+    }
+
+    public void viewOrders(User user){
+        // view all orders
+        System.out.println("======================================");
+        System.out.println("=           View All Orders          =");
+        System.out.println("======================================");
+        adminService.viewOrders(user);
     }
 
     public void viewInventoryHistory(User user)

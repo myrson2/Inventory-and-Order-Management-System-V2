@@ -12,7 +12,7 @@ import domain.product.NonPerishableProducts;
 import domain.product.PerishableProducts;
 import domain.product.Product;
 import domain.user.User;
-import exception.EntityNotFountException;
+import exception.EntityNotFoundException;
 import infrastructure.file.FileManager;
 import infrastructure.log.LoggerService;
 
@@ -93,7 +93,7 @@ public class AdminService {
             loggerService.logError(user.getEmail(), String.format("[SEVERE]: ERROR SAVING A FILE."));
             System.out.println(e.getMessage());
             e.printStackTrace();
-        } catch (EntityNotFountException e){
+        } catch (EntityNotFoundException e){
             e.getMessage();
         }
     }
@@ -135,7 +135,7 @@ public class AdminService {
                         System.out.println(product.getProductDetails());
                     }
                 }
-            } catch (EntityNotFountException e){
+            } catch (EntityNotFoundException e){
             e.getMessage();
         }
     }

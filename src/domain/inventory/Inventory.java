@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import domain.product.Product;
-import exception.EntityNotFountException;
+import exception.EntityNotFoundException;
 
 public class Inventory {
     List<Product> products = new ArrayList<>();
@@ -13,13 +13,13 @@ public class Inventory {
         products.add(product);
     }
 
-    public Product getProductByID(String id) throws EntityNotFountException{
+    public Product getProductByID(String id) throws EntityNotFoundException{
         for (Product product : products) {
             if(product.getId().contains(id)){
                 return product;
             }   
         }
-        throw new EntityNotFountException("[Error]: Product Not Found.");
+        throw new EntityNotFoundException("[Error]: Product Not Found.");
     }
 
     public List<Product> getProducts() {

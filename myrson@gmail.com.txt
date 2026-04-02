@@ -1,1 +1,0 @@
-ID: P-3720 || Name: Milk || Price: 12.00 || quantity: 10 || Expiration Date: 2026-12-12
