@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import application.inventory.InventoryService;
+import application.order.OrderService;
+import domain.order.Order;
+import domain.order.OrderItem;
 import domain.product.NonPerishableProducts;
 import domain.product.PerishableProducts;
 import domain.product.Product;
@@ -16,11 +19,13 @@ public class AdminService {
     private InventoryService inventoryService;
     private FileManager fileManager;
     private LoggerService loggerService;
+    private OrderService orderService;
 
-    public AdminService(InventoryService inventoryService, LoggerService loggerService, FileManager fileManager){
+    public AdminService(OrderService orderService, InventoryService inventoryService, LoggerService loggerService, FileManager fileManager){
         this.inventoryService = inventoryService;
         this.fileManager = fileManager;
         this.loggerService = loggerService;
+        this.orderService = orderService;
     }
 
     public void addProduct(User user, Product product)
@@ -50,6 +55,19 @@ public class AdminService {
             loggerService.logInfo(user.getEmail(), String.format("[WARNING]: Product NOT found."));
         } 
             loggerService.logInfo(user.getEmail(), String.format("[INFO]: Product Successfully Removed."));
+    }
+
+    public void viewOrders(User user){
+        var orderList = orderService.getOrders(user.getEmail()); // HashMap<> orderList in OrderService
+        
+        for (Order order : orderList) {
+            // Displays Order Details
+            System.out.println(order.displayOrder());
+            // Displays Order Items 
+            for (OrderItem items : order.getItems()) {
+                items.getItemDetails();
+            }
+        }
     }
 
     public void viewInventoryHistory(User user)

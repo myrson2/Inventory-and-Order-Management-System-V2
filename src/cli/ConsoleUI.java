@@ -206,9 +206,7 @@ public class ConsoleUI {
     }
 
     // Customer Dashboard Responsibility Functions =====================================
-
-
-
+    
     public void adminDashboard(User user)
     {
         boolean running = true;

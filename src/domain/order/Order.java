@@ -56,6 +56,11 @@ public class Order {
         }
     }
 
+    public String displayOrder()
+    {
+        return String.format("Order ID: %s || Customer ID: %s || Status: %s", orderId, customerId, status);
+    }
+
     public void validateOrder(){
         System.out.println("Not Yet Implemented.");
     }

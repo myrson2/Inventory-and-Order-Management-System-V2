@@ -1,5 +1,6 @@
 package application.order;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,9 +23,8 @@ public class OrderService {
     private FileManager fileManager;
     private OrderHistory orderHistory;
 
-    public HashMap<String, Order> orderList = new HashMap<>();
+    private HashMap<String, ArrayList<Order>> orderList = new HashMap<>();
     
-
     public OrderService(FileManager fileManager, LoggerService loggerService, InventoryService inventoryService, OrderHistory orderHistory){
         this.inventoryService = inventoryService;
         this.loggerService = loggerService;
@@ -34,8 +34,8 @@ public class OrderService {
 
     public Order createOrder(Customer customer, Admin admin) {
         Order order = new Order(customer.getId());
-        
         orderHistory.recordOrderCreation(order.getOrderId(), DateUtils.timeStamp());
+        orderList.put(admin.getEmail(), new ArrayList<>());
         return order;
     }
 
@@ -68,5 +68,9 @@ public class OrderService {
 
     public List<String> getHistory(){
         return orderHistory.getHistory();
+    }
+
+    public ArrayList<Order> getOrders(String email){
+        return orderList.get(email);
     }
 }
