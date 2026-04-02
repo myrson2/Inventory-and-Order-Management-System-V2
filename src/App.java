@@ -32,11 +32,11 @@ public class App {
         // Services
         OrderService orderService = new OrderService(fileManager, loggerService, inventoryService, orderHistory);
         UserService userService = new UserService(loggerService);
-        AdminService adminService = new AdminService(inventoryService, loggerService, fileManager);
+        AdminService adminService = new AdminService(orderService, inventoryService, loggerService, fileManager);
         CustomerService customerService = new CustomerService(orderService, inventoryService, loggerService);
 
         // Console User Interface for Interactions
-        ConsoleUI consoleUI = new ConsoleUI(userService, adminService, customerService, scan);
+        ConsoleUI consoleUI = new ConsoleUI(notificationService, userService, adminService, customerService, scan);
         
         // Start the main application loop
         try {

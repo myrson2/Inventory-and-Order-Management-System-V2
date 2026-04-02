@@ -48,7 +48,7 @@ public class UserService {
         if (emailExists(newUser.getEmail())) {
             System.out.println("Registration failed: A user with this email already exists.");
             loggerService.logWarning(newUser.getEmail(), "[WARNING]: EMAIL IS ALREADY EXIST.");
-            return false;
+            return true;
         }
         users.add(newUser);
         loggerService.logInfo(newUser.getEmail(), "[INFO]: USER SUCCESSFULLY REGISTERED");
@@ -74,6 +74,7 @@ public class UserService {
 
     public void displayAdmin() {
         System.out.println("=== List of Admins ===");
+        System.out.println("- exit");
         for (User u : users) {
             if (u instanceof Admin) {
                 System.out.println("- " + u.getName());
@@ -85,7 +86,7 @@ public class UserService {
         for (User u : users) {
             if (u instanceof Admin && u.getName().equalsIgnoreCase(name)) {
                 return (Admin) u;
-            }
+            } 
         }
         throw new EntityNotFountException("Admin not found.");
     }

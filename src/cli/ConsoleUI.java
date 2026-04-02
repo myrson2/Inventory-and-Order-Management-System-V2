@@ -80,6 +80,7 @@ public class ConsoleUI {
         do{
             userService.displayAdmin();
             String adminName = InputUtil.readString("> ", scan);
+            if(adminName == "exit") break;
 
            // accessing which store is chosen by the customer
             try {

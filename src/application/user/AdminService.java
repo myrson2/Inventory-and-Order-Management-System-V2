@@ -12,6 +12,7 @@ import domain.product.NonPerishableProducts;
 import domain.product.PerishableProducts;
 import domain.product.Product;
 import domain.user.User;
+import exception.EntityNotFountException;
 import infrastructure.file.FileManager;
 import infrastructure.log.LoggerService;
 
@@ -92,6 +93,8 @@ public class AdminService {
             loggerService.logError(user.getEmail(), String.format("[SEVERE]: ERROR SAVING A FILE."));
             System.out.println(e.getMessage());
             e.printStackTrace();
+        } catch (EntityNotFountException e){
+            e.getMessage();
         }
     }
 
@@ -108,28 +111,32 @@ public class AdminService {
 
     public void printProducts(User user)
     {
-        List<Product> getProducts = inventoryService.getListOfProducts(user.getEmail());
+        try {
+            List<Product> getProducts = inventoryService.getListOfProducts(user.getEmail());
 
-        if(getProducts.isEmpty())
-        {
-            System.out.println("Empty Inventory");
-            return;
-        }
+                if(getProducts.isEmpty())
+                {
+                    System.out.println("Empty Inventory");
+                    return;
+                }
 
-        System.out.println("Non-Perishable Products: ");
-        for (Product product : getProducts) {
-            if (product instanceof NonPerishableProducts) {
-                System.out.println(product.getProductDetails());
-            }
-        }
+                System.out.println("Non-Perishable Products: ");
+                for (Product product : getProducts) {
+                    if (product instanceof NonPerishableProducts) {
+                        System.out.println(product.getProductDetails());
+                    }
+                }
 
-        System.out.println();
+                System.out.println();
 
-        System.out.println("Perishable Products: ");
-        for (Product product : getProducts) {
-            if (product instanceof PerishableProducts) {
-                System.out.println(product.getProductDetails());
-            }
+                System.out.println("Perishable Products: ");
+                for (Product product : getProducts) {
+                    if (product instanceof PerishableProducts) {
+                        System.out.println(product.getProductDetails());
+                    }
+                }
+            } catch (EntityNotFountException e){
+            e.getMessage();
         }
     }
 

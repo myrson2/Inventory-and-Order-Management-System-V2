@@ -8,3 +8,23 @@ Apr 01, 2026 8:42:23 PM infrastructure.log.LoggerService logInfo
 INFO: [INFO]: SAMSUNG IS ADDED.
 Apr 01, 2026 8:43:44 PM infrastructure.log.LoggerService logInfo
 INFO: [INFO]: MILK IS ADDED.
+Apr 02, 2026 11:42:46 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY REGISTERED
+Apr 02, 2026 11:42:54 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY LOGIN
+Apr 02, 2026 11:45:04 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY REGISTERED
+Apr 02, 2026 11:45:17 AM infrastructure.log.LoggerService logWarning
+WARNING: [WARNING]: EMAIL IS ALREADY EXIST.
+Apr 02, 2026 11:47:50 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY REGISTERED
+Apr 02, 2026 11:48:32 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY REGISTERED
+Apr 02, 2026 11:49:46 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY REGISTERED
+Apr 02, 2026 11:49:56 AM infrastructure.log.LoggerService logWarning
+WARNING: [WARNING]: EMAIL IS ALREADY EXIST.
+Apr 02, 2026 11:50:04 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: USER SUCCESSFULLY LOGIN
+Apr 02, 2026 11:50:22 AM infrastructure.log.LoggerService logInfo
+INFO: [INFO]: MILK IS ADDED.
